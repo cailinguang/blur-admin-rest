@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -41,6 +43,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
+
+    public static final String SESSION_USER_KEY = "USER";
+
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
 
@@ -97,7 +102,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     //解决跨域问题
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //registry.addMapping("/**");
+        registry.addMapping("/**");
     }
 
     //添加拦截器
@@ -117,13 +122,33 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                                 request.getRequestURI(), getIpAddress(request), JSON.toJSONString(request.getParameterMap()));
 
                         Result result = new Result();
-                        result.setCode(ResultCode.UNAUTHORIZED).setMessage("签名认证失败");
+                        result.setCode(ResultCode.FAIL).setMessage("签名认证失败");
                         responseResult(response, result);
                         return false;
                     }
                 }
             });
         }
+
+        //登录拦截器
+        InterceptorRegistration loginInterceptorRegistration = registry.addInterceptor(new HandlerInterceptorAdapter() {
+            @Override
+            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                HttpSession session = request.getSession();
+                if(session.getAttribute(SESSION_USER_KEY) != null){
+                    return true;
+                }
+
+                Result result = new Result();
+                result.setCode(ResultCode.UNAUTHORIZED).setMessage("用户未登录");
+                responseResult(response, result);
+                return false;
+            }
+        });
+        loginInterceptorRegistration.addPathPatterns("/**");
+        loginInterceptorRegistration.excludePathPatterns("/login");
+
+
     }
 
     private void responseResult(HttpServletResponse response, Result result) {
@@ -159,7 +184,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         String linkString = sb.toString();
         linkString = StringUtils.substring(linkString, 0, linkString.length() - 1);//去除最后一个'&'
 
-        String secret = "Potato";//密钥，自己修改
+        String secret = "Pass-Auto@1!";//密钥，自己修改
         String sign = DigestUtils.md5Hex(linkString + secret);//混合密钥md5
 
         return StringUtils.equals(sign, requestSign);//比较

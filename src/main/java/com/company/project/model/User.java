@@ -27,6 +27,9 @@ public class User {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date registerDate;
 
+    @Column(name = "dept_id")
+    private String deptId;
+
     /**
      * @return id
      */
@@ -109,5 +112,19 @@ public class User {
      */
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
+    }
+
+    /**
+     * @return dept_id
+     */
+    public String getDeptId() {
+        return deptId;
+    }
+
+    /**
+     * @param deptId
+     */
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
     }
 }

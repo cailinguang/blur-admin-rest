@@ -6,9 +6,12 @@ package com.company.project.core;
 public enum ResultCode {
     SUCCESS(200),//成功
     FAIL(400),//失败
-    UNAUTHORIZED(401),//未认证（签名错误）
+    UNAUTHORIZED(401),// 用户未登录
+    FORBIDDEN(403),//已登录不允许访问
     NOT_FOUND(404),//接口不存在
+    SESSION_TIMEOUT(440),//登录超时
     INTERNAL_SERVER_ERROR(500);//服务器内部错误
+
 
     private final int code;
 
