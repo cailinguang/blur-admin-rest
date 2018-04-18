@@ -1,5 +1,8 @@
 package com.company.project.web;
 
+import com.company.project.core.ResultGenerator;
+import com.company.project.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,8 +14,16 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class SessionController {
 
-    @RequestMapping("/login")
-    public void login(HttpSession session,String username, String password){
+    public static final String SESSION_USER_KEY = "USER";
 
+    @Autowired
+    UserService userService;
+
+    @RequestMapping("/logout")
+    public Object logout(HttpSession session){
+        session.removeAttribute(SESSION_USER_KEY);
+        session.invalidate();
+
+        return ResultGenerator.genSuccessResult();
     }
 }

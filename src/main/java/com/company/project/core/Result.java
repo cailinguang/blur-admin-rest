@@ -2,6 +2,8 @@ package com.company.project.core;
 
 import com.alibaba.fastjson.JSON;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 统一API响应结果封装
  */
@@ -10,8 +12,9 @@ public class Result {
     private String message;
     private Object data;
 
-    public Result setCode(ResultCode resultCode) {
-        this.code = resultCode.code();
+
+    public Result setCode(int code) {
+        this.code = code;
         return this;
     }
 
