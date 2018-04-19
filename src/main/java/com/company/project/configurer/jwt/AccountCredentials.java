@@ -1,4 +1,4 @@
-package com.company.project.configurer.auth;
+package com.company.project.configurer.jwt;
 
 /**
  * Created by clg on 2018/4/18.

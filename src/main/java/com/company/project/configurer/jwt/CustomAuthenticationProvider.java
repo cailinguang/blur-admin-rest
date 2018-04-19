@@ -1,6 +1,5 @@
-package com.company.project.configurer.auth;
+package com.company.project.configurer.jwt;
 
-import com.company.project.core.ServiceException;
 import com.company.project.dao.UserMapper;
 import com.company.project.model.User;
 import org.apache.commons.codec.digest.DigestUtils;

@@ -1,5 +1,6 @@
-package com.company.project.configurer.auth;
+package com.company.project.configurer.jwt.filter;
 
+import com.company.project.configurer.jwt.AccountCredentials;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,5 +1,6 @@
-package com.company.project.configurer.auth;
+package com.company.project.configurer.jwt.filter;
 
+import com.company.project.core.Result;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -9,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -21,7 +23,23 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
                          ServletResponse response,
                          FilterChain filterChain)
             throws IOException, ServletException {
-        Authentication authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
+        HttpServletResponse servletResponse = (HttpServletResponse)response;
+
+        Authentication authentication = null;
+        try {
+            authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
+        } catch (Exception e) {
+            servletResponse.setCharacterEncoding("UTF-8");
+            servletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
+            servletResponse.setStatus(400);
+
+            Result result = new Result();
+            result.setCode(400);
+            result.setMessage(e.getMessage());
+
+            response.getWriter().write(result.toString());
+            return;
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
