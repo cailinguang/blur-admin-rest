@@ -57,6 +57,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin","*");
+
         response.setStatus(HttpServletResponse.SC_OK);
 
         Result result = ResultGenerator.genFailResult(failed.getMessage());

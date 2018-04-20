@@ -42,7 +42,9 @@ public class TokenAuthenticationService {
 
         // 将 JWT 写入 body
         try {
-            response.setContentType("application/json");
+            response.setHeader("Content-type", "application/json;charset=UTF-8");
+            response.addHeader("Access-Control-Allow-Origin","*");
+
             Result result = ResultGenerator.genSuccessResult(JWT);
             response.getOutputStream().println(result.toString());
         } catch (IOException e) {

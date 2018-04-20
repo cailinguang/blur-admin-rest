@@ -1,6 +1,7 @@
 package com.company.project.configurer.jwt.filter;
 
 import com.company.project.core.Result;
+import com.company.project.core.ResultGenerator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -31,11 +32,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
         } catch (Exception e) {
             servletResponse.setCharacterEncoding("UTF-8");
             servletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
-            servletResponse.setStatus(400);
+            servletResponse.setStatus(HttpServletResponse.SC_OK);
 
-            Result result = new Result();
-            result.setCode(400);
-            result.setMessage(e.getMessage());
+            Result result = ResultGenerator.genFailResult(e.getMessage());
 
             response.getWriter().write(result.toString());
             return;

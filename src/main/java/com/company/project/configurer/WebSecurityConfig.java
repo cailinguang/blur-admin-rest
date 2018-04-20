@@ -31,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         AccessDeniedErrorHandler errorReport = new AccessDeniedErrorHandler();
         // 关闭csrf验证
         http.csrf().disable()
+                .cors().and()
                 .exceptionHandling().accessDeniedHandler(errorReport).authenticationEntryPoint(errorReport).and()
                 //session disable
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

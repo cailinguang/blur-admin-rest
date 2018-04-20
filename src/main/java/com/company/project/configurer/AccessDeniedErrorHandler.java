@@ -1,6 +1,7 @@
 package com.company.project.configurer;
 
 import com.company.project.core.Result;
+import com.company.project.core.ResultGenerator;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -29,10 +30,12 @@ public class AccessDeniedErrorHandler implements AuthenticationEntryPoint, Acces
     protected void accessDenied(HttpServletRequest request, HttpServletResponse response) throws IOException{
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
-        response.setStatus(403);
+        response.addHeader("Access-Control-Allow-Origin","*");
+
+        response.setStatus(HttpServletResponse.SC_OK);
 
         Result result = new Result();
-        result.setCode(403);
+        result.setCode(HttpServletResponse.SC_FORBIDDEN);
         result.setMessage("Forbidden");
 
         response.getWriter().write(result.toString());
