@@ -63,7 +63,7 @@ public class TokenAuthenticationService {
                     // 验签
                     .setSigningKey(SECRET)
                     // 去掉 Bearer
-                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                    .parseClaimsJws(token.replace(TOKEN_PREFIX, "").replaceAll("\"",""))
                     .getBody();
 
             // 拿用户名

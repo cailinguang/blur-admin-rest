@@ -2,6 +2,7 @@ package com.company.project.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ public class User {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     @Column(name = "nick_name")
@@ -29,6 +31,10 @@ public class User {
 
     @Column(name = "dept_id")
     private String deptId;
+
+    private String phone;
+    private String email;
+    private String status;
 
     /**
      * @return id
@@ -126,5 +132,29 @@ public class User {
      */
     public void setDeptId(String deptId) {
         this.deptId = deptId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
