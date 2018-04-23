@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 public class Role {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String code;

@@ -4,7 +4,7 @@ import com.company.project.core.Service;
 
 
 /**
- * Created by CodeGenerator on 2018/04/17.
+ * Created by CodeGenerator on 2018/04/23.
  */
 public interface RoleService extends Service<Role> {
 

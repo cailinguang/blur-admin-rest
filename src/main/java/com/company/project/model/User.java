@@ -1,8 +1,6 @@
 package com.company.project.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -16,7 +14,7 @@ public class User {
 
     private String username;
 
-    @JsonIgnore
+    @JSONField(serialize = false)
     private String password;
 
     @Column(name = "nick_name")
@@ -25,7 +23,6 @@ public class User {
     private Integer sex;
 
     @Column(name = "register_date")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date registerDate;
 
