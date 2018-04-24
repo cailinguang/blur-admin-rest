@@ -6,8 +6,10 @@ import com.company.project.service.DeptService;
 import com.company.project.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -19,4 +21,10 @@ public class DeptServiceImpl extends AbstractService<Dept> implements DeptServic
     @Resource
     private DeptMapper deptMapper;
 
+    @Override
+    public List<Dept> findDeptByParent(String parent) {
+        Example example = new Example(Dept.class);
+        example.createCriteria().andEqualTo("parent",parent);
+        return deptMapper.selectByCondition(example);
+    }
 }
