@@ -7,8 +7,7 @@ public class Dept {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @Column(name = "p_id")
-    private String pId;
+    private String parent;
 
     private String name;
 
@@ -30,18 +29,12 @@ public class Dept {
         this.id = id;
     }
 
-    /**
-     * @return p_id
-     */
-    public String getpId() {
-        return pId;
+    public String getParent() {
+        return parent;
     }
 
-    /**
-     * @param pId
-     */
-    public void setpId(String pId) {
-        this.pId = pId;
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     /**
