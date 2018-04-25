@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 public class Dept {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
     private String id;
 
     private String parent;

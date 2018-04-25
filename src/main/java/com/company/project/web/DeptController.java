@@ -53,7 +53,7 @@ public class DeptController {
         return ResultGenerator.genSuccessResult(dept);
     }
 
-    @PostMapping("/childrens")
+    @PostMapping("/custom/childrens")
     public Result listDeptByParent(@RequestBody String parent) {
         return ResultGenerator.genSuccessResult(deptService.findDeptByParent(parent));
     }
