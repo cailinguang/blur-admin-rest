@@ -5,6 +5,7 @@ import com.company.project.core.ResultGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,14 +27,13 @@ public class TokenAuthenticationService {
     static final String HEADER_STRING = "Authorization";// 存放Token的Header Key
 
     // JWT生成方法
-    static void addAuthentication(HttpServletResponse response, String username) {
-
+    static void addAuthentication(HttpServletResponse response, Authentication auth) {
         // 生成JWT
         String JWT = Jwts.builder()
                 // 保存权限（角色）
-                .claim("authorities", "ROLE_ADMIN,AUTH_WRITE")
+                .claim("authorities", StringUtils.join(AuthorityUtils.authorityListToSet(auth.getAuthorities()),","))
                 // 用户名写入标题
-                .setSubject(username)
+                .setSubject(auth.getName())
                 // 有效期设置
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
                 // 签名设置
@@ -43,7 +43,6 @@ public class TokenAuthenticationService {
         // 将 JWT 写入 body
         try {
             response.setHeader("Content-type", "application/json;charset=UTF-8");
-            response.addHeader("Access-Control-Allow-Origin","*");
 
             Result result = ResultGenerator.genSuccessResult(JWT);
             response.getOutputStream().println(result.toString());

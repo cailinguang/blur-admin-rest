@@ -54,10 +54,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 // 添加一个过滤器 所有访问 /login 的请求交给 JWTLoginFilter 来处理 这个类处理所有的JWT相关内容
-                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
+                .addFilterAfter(new JWTLoginFilter("/login", authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class)
                 // 添加一个过滤器验证其他请求的Token是否合法
-                .addFilterBefore(new JWTAuthenticationFilter(),
+                .addFilterAfter(new JWTAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
     }
 
@@ -71,8 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(ImmutableList.of("*"));
-        configuration.setAllowedMethods(ImmutableList.of("HEAD",
-                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedMethods(ImmutableList.of("HEAD","GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(ImmutableList.of("*"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -48,7 +48,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
             HttpServletResponse res, FilterChain chain,
             Authentication auth) throws IOException, ServletException {
 
-        TokenAuthenticationService.addAuthentication(res, auth.getName());
+        TokenAuthenticationService.addAuthentication(res, auth);
     }
 
 
@@ -57,7 +57,6 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
-        response.addHeader("Access-Control-Allow-Origin","*");
 
         response.setStatus(HttpServletResponse.SC_OK);
 

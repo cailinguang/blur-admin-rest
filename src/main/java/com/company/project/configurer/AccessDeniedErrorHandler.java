@@ -30,7 +30,6 @@ public class AccessDeniedErrorHandler implements AuthenticationEntryPoint, Acces
     protected void accessDenied(HttpServletRequest request, HttpServletResponse response) throws IOException{
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
-        response.addHeader("Access-Control-Allow-Origin","*");
 
         response.setStatus(HttpServletResponse.SC_OK);
 
