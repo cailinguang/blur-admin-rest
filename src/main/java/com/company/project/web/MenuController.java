@@ -15,7 +15,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/04/23.
 */
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/api/menu")
 public class MenuController {
     @Resource
     private MenuService menuService;

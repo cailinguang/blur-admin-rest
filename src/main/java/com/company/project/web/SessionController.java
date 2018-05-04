@@ -19,7 +19,7 @@ public class SessionController {
     @Autowired
     UserService userService;
 
-    @RequestMapping("/logout")
+    @RequestMapping("/api/logout")
     public Object logout(HttpSession session){
         session.removeAttribute(SESSION_USER_KEY);
         session.invalidate();

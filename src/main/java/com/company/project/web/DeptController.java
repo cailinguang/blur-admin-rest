@@ -15,7 +15,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/04/23.
 */
 @RestController
-@RequestMapping("/dept")
+@RequestMapping("/api/dept")
 public class DeptController {
     @Resource
     private DeptService deptService;

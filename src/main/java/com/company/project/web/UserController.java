@@ -14,7 +14,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/04/17.
 */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
     @Resource
     private UserService userService;

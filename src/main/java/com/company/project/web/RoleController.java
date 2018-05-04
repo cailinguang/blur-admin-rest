@@ -15,7 +15,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/04/23.
 */
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/api/role")
 public class RoleController {
     @Resource
     private RoleService roleService;
