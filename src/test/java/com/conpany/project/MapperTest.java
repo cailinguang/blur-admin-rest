@@ -4,6 +4,7 @@ import com.company.project.dao.PermissionMapper;
 import com.company.project.dao.UserMapper;
 import com.company.project.model.Dept;
 import com.company.project.model.User;
+import com.github.pagehelper.PageHelper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
@@ -20,6 +21,7 @@ public class MapperTest extends Tester{
 
     @Test
     public void testuserMapper(){
+        PageHelper.startPage(1, 1);
         Example example = new Example(User.class);
         example.createCriteria().andEqualTo("deptId","1");
         List<User> users = userMapper.selectByCondition(example);
@@ -34,4 +36,5 @@ public class MapperTest extends Tester{
         permissionMapper.selectRoleByUserId("1");
         permissionMapper.selectUserByRoleId("1");
     }
+
 }

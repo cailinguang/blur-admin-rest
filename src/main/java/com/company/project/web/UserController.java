@@ -6,7 +6,10 @@ import com.company.project.model.User;
 import com.company.project.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Condition;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -20,9 +23,14 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam String deptId) {
         PageHelper.startPage(page, size);
-        List<User> list = userService.findAll();
+        Condition condition = new Condition(User.class);
+        if(StringUtils.isNotBlank(deptId)){
+            condition.createCriteria().andEqualTo("deptId",deptId);
+        }
+
+        List<User> list = userService.findAllByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
