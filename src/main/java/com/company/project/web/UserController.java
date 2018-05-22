@@ -4,6 +4,7 @@ import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.User;
 import com.company.project.service.UserService;
+import com.company.project.utils.PasswordUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,8 +39,13 @@ public class UserController {
 
     @PostMapping
     public Result add(@RequestBody User user) {
+        String password = PasswordUtils.randomPassword();
+
+        user.setPassword(PasswordUtils.digestPassword(user.getUsername(),password));
+        user.setRegisterDate(new Date());
         userService.save(user);
-        return ResultGenerator.genSuccessResult();
+
+        return ResultGenerator.genSuccessResult(password);
     }
 
     @DeleteMapping("/{id}")
