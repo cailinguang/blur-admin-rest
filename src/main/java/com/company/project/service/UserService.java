@@ -8,4 +8,6 @@ import com.company.project.core.Service;
  */
 public interface UserService extends Service<User> {
 
+    public void saveUser(User user);
+
 }

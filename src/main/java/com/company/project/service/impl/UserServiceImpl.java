@@ -1,5 +1,6 @@
 package com.company.project.service.impl;
 
+import com.company.project.core.ServiceException;
 import com.company.project.dao.UserMapper;
 import com.company.project.model.User;
 import com.company.project.service.UserService;
@@ -19,4 +20,15 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Resource
     private UserMapper userMapper;
 
+    @Override
+    public void saveUser(User user) {
+
+        User findUser = new User();
+        findUser.setUsername(user.getUsername());
+        int countUserName = userMapper.selectCount(findUser);
+        if(countUserName!=0){
+            throw new ServiceException("重复的登录名!");
+        }
+        userMapper.insertSelective(user);
+    }
 }

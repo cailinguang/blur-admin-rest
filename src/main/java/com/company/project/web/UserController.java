@@ -43,7 +43,8 @@ public class UserController {
 
         user.setPassword(PasswordUtils.digestPassword(user.getUsername(),password));
         user.setRegisterDate(new Date());
-        userService.save(user);
+
+        userService.saveUser(user);
 
         return ResultGenerator.genSuccessResult(password);
     }
