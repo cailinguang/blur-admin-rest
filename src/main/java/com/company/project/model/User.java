@@ -20,8 +20,6 @@ public class User {
     @Column(name = "nick_name")
     private String nickName;
 
-    private Integer sex;
-
     @Column(name = "register_date")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date registerDate;
@@ -87,20 +85,6 @@ public class User {
      */
     public void setNickName(String nickName) {
         this.nickName = nickName;
-    }
-
-    /**
-     * @return sex
-     */
-    public Integer getSex() {
-        return sex;
-    }
-
-    /**
-     * @param sex
-     */
-    public void setSex(Integer sex) {
-        this.sex = sex;
     }
 
     /**
