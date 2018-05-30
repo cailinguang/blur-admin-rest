@@ -36,7 +36,7 @@ public class DeptController {
 
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable("id") String id) {
-        deptService.deleteById(id);
+        deptService.deleteDept(id);
         return ResultGenerator.genSuccessResult();
     }
 

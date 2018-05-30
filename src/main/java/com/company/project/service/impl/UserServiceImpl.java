@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -31,4 +32,12 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         }
         userMapper.insertSelective(user);
     }
+
+    @Override
+    public List<User> findUsersByDeptId(String deptId) {
+        User user = new User();
+        user.setDeptId(deptId);
+        return userMapper.select(user);
+    }
+
 }

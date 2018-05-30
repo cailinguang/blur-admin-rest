@@ -25,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam String deptId) {
+    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam(defaultValue = "") String deptId) {
         PageHelper.startPage(page, size);
         Condition condition = new Condition(User.class);
         if(StringUtils.isNotBlank(deptId)){
