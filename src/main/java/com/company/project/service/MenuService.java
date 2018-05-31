@@ -4,7 +4,7 @@ import com.company.project.core.Service;
 
 
 /**
- * Created by CodeGenerator on 2018/04/23.
+ * Created by CodeGenerator on 2018/05/31.
  */
 public interface MenuService extends Service<Menu> {
 

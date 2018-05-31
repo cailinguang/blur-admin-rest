@@ -11,7 +11,9 @@ public class Menu {
 
     private String module;
 
-    private String code;
+    private String parent;
+
+    private Integer position;
 
     /**
      * @return id
@@ -56,16 +58,30 @@ public class Menu {
     }
 
     /**
-     * @return code
+     * @return parent
      */
-    public String getCode() {
-        return code;
+    public String getParent() {
+        return parent;
     }
 
     /**
-     * @param code
+     * @param parent
      */
-    public void setCode(String code) {
-        this.code = code;
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * @return position
+     */
+    public Integer getPosition() {
+        return position;
+    }
+
+    /**
+     * @param position
+     */
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

@@ -8,6 +8,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="module" jdbcType="VARCHAR" property="module" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent" jdbcType="VARCHAR" property="parent" />
+    <result column="position" jdbcType="INTEGER" property="position" />
   </resultMap>
 </mapper>

@@ -1,6 +1,9 @@
 package com.company.project.configurer.jwt;
 
+import com.company.project.dao.PermissionMapper;
 import com.company.project.dao.UserMapper;
+import com.company.project.model.Menu;
+import com.company.project.model.Role;
 import com.company.project.model.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by clg on 2018/4/18.
@@ -23,6 +27,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PermissionMapper permissionMapper;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -45,9 +51,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 
         // 这里设置权限和角色
+        List<Role> roles = permissionMapper.selectRoleByUserId(user.getId());
+        List<Menu> menus = permissionMapper.selectMenuByUserId(user.getId());
+
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add( new SimpleGrantedAuthority("ROLE_ADMIN") );
-        authorities.add( new SimpleGrantedAuthority("AUTH_WRITE") );
+        roles.forEach(role -> {
+            authorities.add( new SimpleGrantedAuthority("ROLE_"+role.getCode()) );
+        });
+        menus.forEach(menu -> {
+            authorities.add( new SimpleGrantedAuthority("AUTH_"+menu.getModule()) );
+        });
+
         // 生成令牌
         Authentication auth = new UsernamePasswordAuthenticationToken(username, password, authorities);
         return auth;

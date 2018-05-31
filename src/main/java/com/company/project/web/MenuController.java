@@ -12,10 +12,10 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2018/04/23.
+* Created by CodeGenerator on 2018/05/31.
 */
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api//menu")
 public class MenuController {
     @Resource
     private MenuService menuService;
