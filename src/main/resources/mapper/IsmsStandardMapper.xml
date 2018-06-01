@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.IsmsStandardMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.IsmsStandard">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="STANDARD_ID" jdbcType="VARCHAR" property="standardId" />
+    <result column="STANDARD_TYPE" jdbcType="VARCHAR" property="standardType" />
+    <result column="IS_EVALUATION" jdbcType="INTEGER" property="isEvaluation" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="ARCHIVED" jdbcType="INTEGER" property="archived" />
+  </resultMap>
+</mapper>
