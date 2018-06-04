@@ -8,6 +8,7 @@ import com.company.project.model.IsmsStringProperty;
 import com.company.project.service.IsmsStandardService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -25,9 +26,13 @@ public class IsmsStandardController {
     private IsmsStandardService standardService;
 
     @GetMapping
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam String standardType) {
+    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam String isEvaluation) {
         PageHelper.startPage(page, size);
-        List<IsmsStandard> list = standardService.findAll();
+        Condition condition = new Condition(IsmsStandard.class);
+        if(StringUtils.isNotBlank(isEvaluation)){
+            condition.createCriteria().andEqualTo("isEvaluation",isEvaluation);
+        }
+        List<IsmsStandard> list = standardService.findAllByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
