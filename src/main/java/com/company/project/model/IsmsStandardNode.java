@@ -1,9 +1,13 @@
 package com.company.project.model;
 
+import com.company.project.model.property.Properties;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "ISMS_STANDARD_NODE")
-public class IsmsStandardNode {
+public class IsmsStandardNode extends Properties{
     @Id
     @Column(name = "NODE_ID")
     @GeneratedValue(generator = "UUID")
@@ -23,6 +27,18 @@ public class IsmsStandardNode {
 
     @Column(name = "PARENT_NODE_ID")
     private String parentNodeId;
+
+    @Transient
+    private final List<IsmsStandardNode> children = new ArrayList();
+
+    public void addChild(IsmsStandardNode child)
+    {
+        this.children.add(child);
+    }
+
+    public List<IsmsStandardNode> getChildren() {
+        return children;
+    }
 
     /**
      * @return NODE_ID
@@ -106,5 +122,22 @@ public class IsmsStandardNode {
      */
     public void setParentNodeId(String parentNodeId) {
         this.parentNodeId = parentNodeId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        IsmsStandardNode that = (IsmsStandardNode) o;
+
+        if (!nodeId.equals(that.nodeId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return nodeId.hashCode();
     }
 }
