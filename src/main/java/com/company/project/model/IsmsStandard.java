@@ -1,6 +1,7 @@
 package com.company.project.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "ISMS_STANDARD")
 public class IsmsStandard {
@@ -23,6 +24,9 @@ public class IsmsStandard {
 
     @Column(name = "ARCHIVED")
     private Integer archived;
+
+    @Column(name = "CREATE_TIME")
+    private Date createTime;
 
     /**
      * @return STANDARD_ID
@@ -106,5 +110,13 @@ public class IsmsStandard {
      */
     public void setArchived(Integer archived) {
         this.archived = archived;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

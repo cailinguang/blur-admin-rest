@@ -26,12 +26,12 @@ public class IsmsStandardController {
     private IsmsStandardService standardService;
 
     @GetMapping
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam String isEvaluation) {
+    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,
+                       @RequestParam(defaultValue = "0") String isEvaluation, @RequestParam(defaultValue = "vda") String standardType) {
         PageHelper.startPage(page, size);
         Condition condition = new Condition(IsmsStandard.class);
-        if(StringUtils.isNotBlank(isEvaluation)){
-            condition.createCriteria().andEqualTo("isEvaluation",isEvaluation);
-        }
+        condition.createCriteria().andEqualTo("isEvaluation",isEvaluation).andEqualTo("standardType",standardType);
+
         List<IsmsStandard> list = standardService.findAllByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);

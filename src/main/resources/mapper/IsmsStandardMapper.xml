@@ -11,5 +11,6 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
     <result column="ARCHIVED" jdbcType="INTEGER" property="archived" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
 </mapper>
