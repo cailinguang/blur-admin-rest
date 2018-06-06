@@ -1,5 +1,6 @@
 package com.company.project.configurer;
 
+import com.company.project.dao.BackWriteInterceptor;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -39,8 +40,9 @@ public class MybatisConfigurer {
         properties.setProperty("supportMethodsArguments", "true");//支持通过 Mapper 接口参数来传递分页参数
         pageHelper.setProperties(properties);
 
+        BackWriteInterceptor backWriteInterceptor = new BackWriteInterceptor();
         //添加插件
-        factory.setPlugins(new Interceptor[]{pageHelper});
+        factory.setPlugins(new Interceptor[]{pageHelper,backWriteInterceptor});
 
         //添加XML目录
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

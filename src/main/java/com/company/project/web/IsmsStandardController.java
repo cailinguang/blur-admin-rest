@@ -68,7 +68,7 @@ public class IsmsStandardController {
      * @return
      */
     @GetMapping("/standardNodes")
-    public Result queryStandardNodes(@RequestParam String standardId,@RequestParam(defaultValue = "-1") int level){
+    public Result queryStandardNodes(@RequestParam String standardId,@RequestParam(defaultValue = "0") int level){
         List<IsmsStandardNode> nodes = standardService.queryStandardNodes(standardId,level);
         return ResultGenerator.genSuccessResult(nodes);
     }

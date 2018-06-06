@@ -40,4 +40,8 @@ public class Properties {
     public void removeProperty(String name) {
         this.properties.remove(name);
     }
+
+    public void setProperty(Map<String, Property> properties){
+        this.properties = properties;
+    }
 }

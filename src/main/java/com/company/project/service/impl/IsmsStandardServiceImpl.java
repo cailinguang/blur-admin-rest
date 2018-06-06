@@ -53,7 +53,7 @@ public class IsmsStandardServiceImpl extends AbstractService<IsmsStandard> imple
                 results.add(e);
             }
             else if (indexed.containsKey(e.getParentNodeId())) {
-                if(level<=getLevel(e,indexed)){
+                if(level!=0 && level<=getLevel(e,indexed)){
                     return;
                 }
                 indexed.get(e.getParentNodeId()).addChild(e);
@@ -84,8 +84,102 @@ public class IsmsStandardServiceImpl extends AbstractService<IsmsStandard> imple
 
     @Override
     public void createApplicabilityLibary(IsmsStandard applicability) {
-        IsmsStandard standard = standardMapper.selectByPrimaryKey(applicability.getStandardId());
+        String standardId = applicability.getStandardId();
+        IsmsStandard standard = standardMapper.selectByPrimaryKey(standardId);
 
+        applicability.setStandardId(null);
+        applicability.setIsEvaluation(1);
+        standardMapper.insert(applicability);
+        System.out.println(applicability.getStandardId());
+
+        Condition condition = new Condition(IsmsStandardNode.class);
+        condition.createCriteria().andEqualTo("standardId",standardId);
+        condition.orderBy("PARENT_NODE_ID");
+
+        Map<String,IsmsStandardNode> indexed = new HashMap();
+        List<IsmsStandardNode> nodes = standardNodeMapper.selectByCondition(condition);
+        nodes.forEach(e->indexed.put(e.getNodeId(),e));
+        loadEnumProperty(standardId,indexed);
+        loadFloatProperty(standardId,indexed);
+        loadStringProperty(standardId,indexed);
+
+        nodes.forEach(e->{
+            if(indexed.containsKey(e.getParentNodeId())) {
+                indexed.get(e.getParentNodeId()).addChild(e);
+            }
+        });
+
+        saveNodes(applicability.getSelectNodes(),indexed,applicability.getStandardId());
+    }
+
+    private void saveNodes(List<IsmsStandardNode> selectNodes,Map<String,IsmsStandardNode> indexed,String standardId) {
+        selectNodes.forEach(node->{
+            String nodeId = node.getNodeId();
+            node.setProperty(indexed.get(nodeId).getProperties());
+
+            if( node.getApplicability()!=null&&node.getApplicability()==true || (node.getNodeType().equals("vda_level") || node.getNodeType().equals("vda_control"))){
+
+                copyStandardNode(node,standardId);
+
+                if(node.getNodeType().equals("vda_question")){
+                    saveNodes(indexed.get(nodeId).getChildren(),indexed,standardId);
+                }else{
+                    saveNodes(node.getChildren(),indexed,standardId);
+                }
+
+            }
+
+
+        });
+    }
+
+    private void copyStandardNode(IsmsStandardNode ismsStandardNode, String standardId) {
+        ismsStandardNode.setNodeId(null);
+        ismsStandardNode.setStandardId(standardId);
+        standardNodeMapper.insert(ismsStandardNode);
+
+        ismsStandardNode.getProperties().forEach((k,v)->{
+            if(v instanceof StringProperty){
+                StringProperty p = (StringProperty)v;
+                IsmsStringProperty pp = new IsmsStringProperty();
+                pp.setValue(p.getValue());
+                pp.setName(p.getName());
+                pp.setReadonly(p.isReadonly()?1:0);
+                pp.setStandardId(standardId);
+                pp.setNodeId(ismsStandardNode.getNodeId());
+                stringPropertyMapper.insert(pp);
+            }
+            else if(v instanceof EnumProperty){
+                EnumProperty p = (EnumProperty)v;
+                IsmsEnumProperty pp = new IsmsEnumProperty();
+                pp.setValue(p.getValue());
+                pp.setName(p.getName());
+                pp.setReadonly(p.isReadonly()?1:0);
+                pp.setStandardId(standardId);
+                pp.setNodeId(ismsStandardNode.getNodeId());
+                enumPropertyMapper.insert(pp);
+            }
+            else if(v instanceof FloatProperty){
+                FloatProperty p = (FloatProperty)v;
+                IsmsFloatProperty pp = new IsmsFloatProperty();
+                pp.setValue(p.getValue());
+                pp.setName(p.getName());
+                pp.setReadonly(p.isReadonly()?1:0);
+                pp.setStandardId(standardId);
+                pp.setNodeId(ismsStandardNode.getNodeId());
+                floatPropertyMapper.insert(pp);
+            }
+        });
+        if(ismsStandardNode.getNodeType().equals("vda_question")){
+            IsmsStringProperty pp = new IsmsStringProperty();
+            pp.setValue(ismsStandardNode.getTarget());
+            pp.setName("target");
+            pp.setReadonly(0);
+            pp.setStandardId(standardId);
+            pp.setNodeId(ismsStandardNode.getNodeId());
+            stringPropertyMapper.insert(pp);
+
+        }
 
     }
 

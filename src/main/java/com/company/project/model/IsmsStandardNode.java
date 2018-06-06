@@ -31,6 +31,11 @@ public class IsmsStandardNode extends Properties{
     @Transient
     private final List<IsmsStandardNode> children = new ArrayList();
 
+    @Transient
+    private Boolean applicability;
+    @Transient
+    private String target;
+
     public void addChild(IsmsStandardNode child)
     {
         this.children.add(child);
@@ -122,6 +127,22 @@ public class IsmsStandardNode extends Properties{
      */
     public void setParentNodeId(String parentNodeId) {
         this.parentNodeId = parentNodeId;
+    }
+
+    public Boolean getApplicability() {
+        return applicability;
+    }
+
+    public void setApplicability(Boolean applicability) {
+        this.applicability = applicability;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     @Override
