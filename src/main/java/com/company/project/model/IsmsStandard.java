@@ -1,7 +1,9 @@
 package com.company.project.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "ISMS_STANDARD")
 public class IsmsStandard {
@@ -27,6 +29,9 @@ public class IsmsStandard {
 
     @Column(name = "CREATE_TIME")
     private Date createTime;
+
+    @Transient
+    private final List<IsmsStandardNode> selectNodes = new ArrayList();
 
     /**
      * @return STANDARD_ID
@@ -118,5 +123,9 @@ public class IsmsStandard {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public List<IsmsStandardNode> getSelectNodes() {
+        return selectNodes;
     }
 }

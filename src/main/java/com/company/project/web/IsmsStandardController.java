@@ -68,12 +68,17 @@ public class IsmsStandardController {
      * @return
      */
     @GetMapping("/standardNodes")
-    public Result queryStandardNodes(@RequestParam String standardId){
-        List<IsmsStandardNode> nodes = standardService.queryStandardNodes(standardId);
+    public Result queryStandardNodes(@RequestParam String standardId,@RequestParam(defaultValue = "-1") int level){
+        List<IsmsStandardNode> nodes = standardService.queryStandardNodes(standardId,level);
         return ResultGenerator.genSuccessResult(nodes);
     }
 
-    @PostMapping("/nodeProperty")
+    /**
+     * 更新节点属性
+     * @param property
+     * @return
+     */
+    @PutMapping("/nodeProperty")
     public Result updateNodeProperty(@RequestBody Map<String,String> property){
         String type = property.get("type");
         String propertyId = property.get("id");
@@ -81,6 +86,17 @@ public class IsmsStandardController {
         if("string".equals(type)){
             standardService.updateNodeStringPropertyValue(propertyId,propertyValue);
         }
+        return ResultGenerator.genSuccessResult();
+    }
+
+    /**
+     * 新增适用性库
+     * @param applicability
+     * @return
+     */
+    @PostMapping("/applicability")
+    public Result saveApplicabilityLibary(@RequestBody IsmsStandard applicability){
+        standardService.createApplicabilityLibary(applicability);
         return ResultGenerator.genSuccessResult();
     }
 }

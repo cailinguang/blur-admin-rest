@@ -10,8 +10,15 @@ import java.util.List;
  * Created by CodeGenerator on 2018/06/01.
  */
 public interface IsmsStandardService extends Service<IsmsStandard> {
-
-    List<IsmsStandardNode> queryStandardNodes(String standardId);
+    /**
+     * 查询库node tree
+     * @param standardId
+     * @param level 数深度,-1无限制
+     * @return
+     */
+    List<IsmsStandardNode> queryStandardNodes(String standardId,int level);
 
     void updateNodeStringPropertyValue(String propertyId , String propertyValue);
+
+    void createApplicabilityLibary(IsmsStandard applicability);
 }

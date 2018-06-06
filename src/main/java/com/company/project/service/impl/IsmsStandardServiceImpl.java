@@ -33,7 +33,7 @@ public class IsmsStandardServiceImpl extends AbstractService<IsmsStandard> imple
     private IsmsStringPropertyMapper stringPropertyMapper;
 
     @Override
-    public List<IsmsStandardNode> queryStandardNodes(String standardId) {
+    public List<IsmsStandardNode> queryStandardNodes(String standardId,int level) {
         List<IsmsStandardNode> results = new ArrayList();
         Map<String,IsmsStandardNode> indexed = new HashMap();
 
@@ -53,6 +53,9 @@ public class IsmsStandardServiceImpl extends AbstractService<IsmsStandard> imple
                 results.add(e);
             }
             else if (indexed.containsKey(e.getParentNodeId())) {
+                if(level<=getLevel(e,indexed)){
+                    return;
+                }
                 indexed.get(e.getParentNodeId()).addChild(e);
             }
         });
@@ -62,11 +65,28 @@ public class IsmsStandardServiceImpl extends AbstractService<IsmsStandard> imple
         return results;
     }
 
+    private int getLevel(IsmsStandardNode e, Map<String, IsmsStandardNode> indexed) {
+        int level = 0;
+        while(indexed.get(e.getParentNodeId())!=null){
+            level++;
+            e = indexed.get(e.getParentNodeId());
+        }
+        return level;
+    }
+
+
     @Override
     public void updateNodeStringPropertyValue(String propertyId, String propertyValue) {
         IsmsStringProperty property = stringPropertyMapper.selectByPrimaryKey(propertyId);
         property.setValue(propertyValue);
         stringPropertyMapper.updateByPrimaryKey(property);
+    }
+
+    @Override
+    public void createApplicabilityLibary(IsmsStandard applicability) {
+        IsmsStandard standard = standardMapper.selectByPrimaryKey(applicability.getStandardId());
+
+
     }
 
     private void sort(List<IsmsStandardNode> results) {
