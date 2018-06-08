@@ -22,8 +22,6 @@ import java.util.*;
 @Transactional
 public class ApplicabilityLibaryServiceImpl extends AbstractService<ApplicabilityLibary> implements ApplicabilityLibaryService {
     @Resource
-    private StandardLibaryMapper standardLibaryMapper;
-    @Resource
     private StandardLibaryNodeMapper standardLibaryNodeMapper;
     @Autowired
     private ApplicabilityLibaryMapper applicabilityLibaryMapper;
@@ -37,11 +35,9 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
 
         System.out.println(applicability.getId());
 
-        StandardLibary standard = standardLibaryMapper.selectByPrimaryKey(applicability.getStandardId());
         Map<String,StandardLibaryNode> indexed = new HashMap();
         Condition condition = new Condition(StandardLibaryNode.class);
         condition.createCriteria().andEqualTo("standardId",applicability.getStandardId());
-        condition.orderBy("PARENT_NODE_ID");
 
         List<StandardLibaryNode> nodes = standardLibaryNodeMapper.selectByCondition(condition);
         nodes.forEach(e->indexed.put(e.getId(),e));
@@ -109,7 +105,6 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
 
         Condition condition = new Condition(ApplicabilityLibaryNode.class);
         condition.createCriteria().andEqualTo("applicabilityId",applicabilityId);
-        condition.orderBy("PARENT_NODE_ID");
 
         List<ApplicabilityLibaryNode> nodes = applicabilityLibaryNodeMapper.selectByCondition(condition);
         nodes.forEach(e->indexed.put(e.getId(),e));

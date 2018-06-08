@@ -18,5 +18,6 @@
     <result column="level_is_approved" jdbcType="VARCHAR" property="levelIsApproved" />
     <result column="compliance_level" jdbcType="VARCHAR" property="complianceLevel" />
     <result column="node_position" jdbcType="INTEGER" property="nodePosition" />
+    <result column="applicability_node_id" jdbcType="VARCHAR" property="applicabilityNodeId" />
   </resultMap>
 </mapper>

@@ -1,6 +1,8 @@
 package com.company.project.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "evaluation_libary_node")
 public class EvaluationLibaryNode {
@@ -39,6 +41,36 @@ public class EvaluationLibaryNode {
 
     @Column(name = "compliance_level")
     private String complianceLevel;
+
+    @Column(name = "applicability_node_id")
+    private String applicabilityNodeId;
+
+
+    @Transient
+    private List<EvaluationLibaryNode> children = new ArrayList();
+
+    @Transient
+    private Boolean applicability;
+
+    public Boolean getApplicability() {
+        return applicability;
+    }
+
+    public void setApplicability(Boolean applicability) {
+        this.applicability = applicability;
+    }
+
+    public void addChildren(EvaluationLibaryNode node){
+        this.children.add(node);
+    }
+
+    public List<EvaluationLibaryNode> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<EvaluationLibaryNode> children) {
+        this.children = children;
+    }
 
     /**
      * @return id
@@ -214,5 +246,13 @@ public class EvaluationLibaryNode {
 
     public void setNodePosition(Integer nodePosition) {
         this.nodePosition = nodePosition;
+    }
+
+    public String getApplicabilityNodeId() {
+        return applicabilityNodeId;
+    }
+
+    public void setApplicabilityNodeId(String applicabilityNodeId) {
+        this.applicabilityNodeId = applicabilityNodeId;
     }
 }

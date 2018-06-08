@@ -1,6 +1,8 @@
 package com.company.project.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 @Table(name = "evaluation_libary")
@@ -15,6 +17,8 @@ public class EvaluationLibary {
 
     private String status;
 
+    private String type;
+
     @Column(name = "applicability_id")
     private String applicabilityId;
 
@@ -23,6 +27,18 @@ public class EvaluationLibary {
 
     @Column(name="evaluation_type")
     private String evaluationType;
+
+
+    @Transient
+    private List<EvaluationLibaryNode> selectNodes = new ArrayList();
+
+    public List<EvaluationLibaryNode> getSelectNodes() {
+        return selectNodes;
+    }
+
+    public void setSelectNodes(List<EvaluationLibaryNode> selectNodes) {
+        this.selectNodes = selectNodes;
+    }
 
     /**
      * @return id
@@ -114,5 +130,13 @@ public class EvaluationLibary {
 
     public void setEvaluationType(String evaluationType) {
         this.evaluationType = evaluationType;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

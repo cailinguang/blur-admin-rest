@@ -33,6 +33,11 @@ public class ApplicabilityLibaryController {
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable("id") String id) {
         applicabilityLibaryService.deleteLibary(id);

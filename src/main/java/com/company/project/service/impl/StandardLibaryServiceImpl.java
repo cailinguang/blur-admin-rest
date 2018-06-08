@@ -32,7 +32,6 @@ public class StandardLibaryServiceImpl extends AbstractService<StandardLibary> i
 
         Condition condition = new Condition(StandardLibaryNode.class);
         condition.createCriteria().andEqualTo("standardId",standardId);
-        condition.orderBy("PARENT_NODE_ID");
 
         List<StandardLibaryNode> nodes = standardLibaryNodeMapper.selectByCondition(condition);
         nodes.forEach(e->indexed.put(e.getId(),e));
