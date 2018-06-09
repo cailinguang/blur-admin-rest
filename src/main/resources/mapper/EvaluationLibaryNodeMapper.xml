@@ -19,5 +19,6 @@
     <result column="compliance_level" jdbcType="VARCHAR" property="complianceLevel" />
     <result column="node_position" jdbcType="INTEGER" property="nodePosition" />
     <result column="applicability_node_id" jdbcType="VARCHAR" property="applicabilityNodeId" />
+    <association property="assign" column="assign_user" select="com.company.project.dao.UserMapper.selectByPrimaryKey"/>
   </resultMap>
 </mapper>

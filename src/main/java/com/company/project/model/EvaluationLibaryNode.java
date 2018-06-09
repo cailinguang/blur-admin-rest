@@ -52,6 +52,17 @@ public class EvaluationLibaryNode {
     @Transient
     private Boolean applicability;
 
+    @Transient
+    private User assign;
+
+    public User getAssign() {
+        return assign;
+    }
+
+    public void setAssign(User assign) {
+        this.assign = assign;
+    }
+
     public Boolean getApplicability() {
         return applicability;
     }

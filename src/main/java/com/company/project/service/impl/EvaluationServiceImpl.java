@@ -52,7 +52,7 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
         Condition condition = new Condition(EvaluationLibaryNode.class);
         condition.createCriteria().andEqualTo("evaluationId",evaluationId);
 
-        List<EvaluationLibaryNode> nodes = evaluationLibaryNodeMapper.selectByCondition(condition);
+        List<EvaluationLibaryNode> nodes = evaluationLibaryNodeMapper.selectNodesByEvaluationIdWithAssignUser(evaluationId);
         nodes.forEach(e->indexed.put(e.getId(),e));
 
 
@@ -77,6 +77,7 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
     @Override
     public void createEvaluation(EvaluationLibary evaluation) {
         evaluation.setCreateTime(new Date());
+        evaluation.setStatus(EVALUATION_STATUS_PROCESSING);
         evaluationLibaryMapper.insert(evaluation);
 
         System.out.println(evaluation.getId());
