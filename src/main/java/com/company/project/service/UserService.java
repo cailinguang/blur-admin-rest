@@ -13,4 +13,6 @@ public interface UserService extends Service<User> {
     public void saveUser(User user);
 
     public List<User> findUsersByDeptId(String deptId);
+
+    public User getCurrentUser();
 }

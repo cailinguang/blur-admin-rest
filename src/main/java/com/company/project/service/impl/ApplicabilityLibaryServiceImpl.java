@@ -6,6 +6,7 @@ import com.company.project.dao.ApplicabilityLibaryNodeMapper;
 import com.company.project.model.*;
 import com.company.project.model.ApplicabilityLibaryNode;
 import com.company.project.service.ApplicabilityLibaryService;
+import com.company.project.utils.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
         selectNodes.forEach(node->{
             String nodeId = node.getId();
 
-            if( node.getApplicability()!=null&&node.getApplicability()==true || (node.getType().equals("vda_level") || node.getType().equals("vda_control"))){
+            if( node.getApplicability()!=null&&node.getApplicability()==true || (node.getType().equals(Constants.VDA_TYPE_LEVEL) || node.getType().equals(Constants.VDA_TYPE_CONTROL))){
 
                 node.setId(null);
                 node.setParentId(parentId);
@@ -64,7 +65,7 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
                 node.setStandardNodeId(nodeId);
                 applicabilityLibaryNodeMapper.insert(node);
 
-                if(node.getType().equals("vda_question")){
+                if(node.getType().equals(Constants.VDA_TYPE_QUESTION)){
 
                     List<ApplicabilityLibaryNode> childrens = new ArrayList();
                     indexed.get(nodeId).getChildren().forEach(e->{
@@ -163,7 +164,7 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
         List<ApplicabilityLibaryNode> selectNodes = applicability.getSelectNodes();
         selectNodes.forEach(e->{
             e.getChildren().forEach(e2->{
-                if(e2.getApplicability()!=null&&e2.getApplicability()==true && e2.getType().equals("vda_question")) {
+                if(e2.getApplicability()!=null&&e2.getApplicability()==true && e2.getType().equals(Constants.VDA_TYPE_QUESTION)) {
                     ApplicabilityLibaryNode update = new ApplicabilityLibaryNode();
                     update.setId(e2.getId());
                     update.setTargetValue(e2.getTargetValue());
