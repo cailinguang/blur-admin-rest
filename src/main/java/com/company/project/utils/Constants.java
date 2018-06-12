@@ -14,4 +14,9 @@ public class Constants {
     public static final String ROLE_SECURITY_LIAISON = "liaison";
     /**CISO*/
     public static final String ROLE_CISO = "ciso";
+
+    public static final String EVALUATION_QUESTION_STATUS_PENDING = "0";
+    public static final String EVALUATION_QUESTION_STATUS_PROCESSING = "1";
+    public static final String EVALUATION_QUESTION_STATUS_SUBMITTED = "2";
+    public static final String EVALUATION_QUESTION_STATUS_REVIEW = "3";
 }

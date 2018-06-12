@@ -1,12 +1,11 @@
 package com.company.project.service.impl;
 
+import com.company.project.core.AbstractService;
 import com.company.project.core.ServiceException;
 import com.company.project.dao.UserMapper;
 import com.company.project.model.User;
 import com.company.project.service.UserService;
-import com.company.project.core.AbstractService;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,10 +43,10 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public User getCurrentUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+        String  userName =  (String)SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return userMapper.selectByUserName(userDetails.getUsername());
+        return userMapper.selectByUserName(userName);
     }
 
 }

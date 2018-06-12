@@ -22,14 +22,7 @@
     <association property="assign" column="assign_user" select="com.company.project.dao.UserMapper.selectByPrimaryKey"/>
   </resultMap>
 
-    <select id="slectEvaluationNode" resultMap="BaseResultMap">
-        select * from  evaluation_libary_node where id in(    select id from (
-        select t1.id,
-        if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild
-        from (
-        select id,parent_id from evaluation_libary_node t   order by parent_id, id
-        ) t1,
-        (select @pids := #{param1}) t2
-        ) t3 where ischild != 0 )
+    <select id="slectAllChildrenNode" resultMap="BaseResultMap">
+        select * from  evaluation_libary_node where parent_id = #{param1} order by node_position
     </select>
 </mapper>

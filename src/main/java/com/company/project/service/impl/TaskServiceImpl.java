@@ -5,6 +5,7 @@ import com.company.project.dao.EvaluationLibaryNodeMapper;
 import com.company.project.model.EvaluationLibary;
 import com.company.project.model.EvaluationLibaryNode;
 import com.company.project.model.User;
+import com.company.project.service.EvaluationService;
 import com.company.project.service.RoleService;
 import com.company.project.service.TaskService;
 import com.company.project.service.UserService;
@@ -32,6 +33,8 @@ public class TaskServiceImpl implements TaskService {
     private EvaluationLibaryNodeMapper evaluationLibaryNodeMapper;
     @Resource
     private UserService userService;
+    @Resource
+    private EvaluationService evaluationService;
 
     @Override
     public List<EvaluationLibary> findAll() {
@@ -55,13 +58,15 @@ public class TaskServiceImpl implements TaskService {
         condition.createCriteria().andEqualTo("evaluationId",evaluationId);
 
         List<EvaluationLibaryNode> nodes = evaluationLibaryNodeMapper.selectNodesByEvaluationIdWithAssignUser(evaluationId);
-        nodes.forEach(e->{
+        for(int i=nodes.size()-1;i>=0;i--){
+            EvaluationLibaryNode e = nodes.get(i);
             //跳过 question
             if(!queryAll && Constants.VDA_TYPE_QUESTION.equals(e.getType()) && !currentUser.getId().equals(e.getAssignUser())){
-                return;
+                nodes.remove(i);
+                continue;
             }
             indexed.put(e.getId(),e);
-        });
+        }
 
 
         nodes.forEach(e->{
@@ -86,20 +91,32 @@ public class TaskServiceImpl implements TaskService {
     public EvaluationLibaryNode queryChildrenNodes(String parentId) {
         EvaluationLibaryNode parent = evaluationLibaryNodeMapper.selectByPrimaryKey(parentId);
         List<EvaluationLibaryNode> nodes = evaluationLibaryNodeMapper.slectAllChildrenNode(parentId);
-
-        Map<String,EvaluationLibaryNode> indexed = new HashMap();
-        nodes.forEach(e->indexed.put(e.getId(),e));
         nodes.forEach(e->{
-            if(e.getParentId().equals(parentId)){
-                parent.addChildren(e);
-            }
-            else if(indexed.containsKey(e.getParentId())){
-                indexed.get(e.getParentId()).addChildren(e);
-            }
+            _children(e);
         });
 
-
+        parent.setChildren(nodes);
         return parent;
+    }
+
+    @Override
+    public void updateTask(EvaluationLibary evaluation) {
+        evaluationLibaryMapper.updateByPrimaryKeySelective(evaluation);
+
+        List<EvaluationLibaryNode> selectNodes = evaluation.getSelectNodes();
+        selectNodes.forEach(e->{
+            e.getChildren().forEach(e2->{
+
+            });
+        });
+
+    }
+
+    private void _children(EvaluationLibaryNode parent){
+        parent.setChildren(evaluationLibaryNodeMapper.slectAllChildrenNode(parent.getId()));
+        parent.getChildren().forEach(e->{
+            _children(e);
+        });
     }
 
     private int getLevel(EvaluationLibaryNode e, Map<String, EvaluationLibaryNode> indexed) {

@@ -109,9 +109,9 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
                 node.setParentId(parentId);
                 node.setEvaluationId(evaluationId);
                 node.setApplicabilityNodeId(nodeId);
-                evaluationLibaryNodeMapper.insert(node);
 
                 if(node.getType().equals(Constants.VDA_TYPE_QUESTION)){
+                    node.setStatus(Constants.EVALUATION_QUESTION_STATUS_PENDING);
 
                     List<EvaluationLibaryNode> childrens = new ArrayList();
                     indexed.get(nodeId).getChildren().forEach(e->{
@@ -127,6 +127,7 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
                     saveNodes(node.getChildren(),indexed,evaluationId,node.getId());
                 }
 
+                evaluationLibaryNodeMapper.insert(node);
             }
 
 

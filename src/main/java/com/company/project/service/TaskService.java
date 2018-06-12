@@ -14,4 +14,6 @@ public interface TaskService {
     List<EvaluationLibaryNode> queryNodes(String evaluationId, int level);
 
     EvaluationLibaryNode queryChildrenNodes(String parentId);
+
+    void updateTask(EvaluationLibary evaluation);
 }

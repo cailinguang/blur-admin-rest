@@ -2,7 +2,6 @@ package com.company.project.utils;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -12,10 +11,7 @@ import java.util.Collection;
 public class SecurityUtils {
 
     public static boolean hasRole(String role){
-        UserDetails userDetail = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-        Collection<? extends GrantedAuthority> authorities = userDetail.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         for(GrantedAuthority authority:authorities){
             if(authority.getAuthority().equals("ROLE_"+role)){
                 return true;
