@@ -56,9 +56,9 @@ public class TaskController {
      * @param applicability
      * @return
      */
-    @PutMapping
-    public Result updateTask(@RequestBody EvaluationLibary applicability){
-        taskService.updateTask(applicability);
+    @PutMapping("/{type}")
+    public Result updateTask(@PathVariable("type")String type,@RequestBody EvaluationLibary applicability){
+        taskService.updateTask(applicability,type);
         return ResultGenerator.genSuccessResult();
     }
 }

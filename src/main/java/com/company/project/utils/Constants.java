@@ -15,8 +15,19 @@ public class Constants {
     /**CISO*/
     public static final String ROLE_CISO = "ciso";
 
+    /**待处理*/
     public static final String EVALUATION_QUESTION_STATUS_PENDING = "0";
+    /**处理中*/
     public static final String EVALUATION_QUESTION_STATUS_PROCESSING = "1";
+    /**已提交*/
     public static final String EVALUATION_QUESTION_STATUS_SUBMITTED = "2";
+    /**复核完成*/
     public static final String EVALUATION_QUESTION_STATUS_REVIEW = "3";
+
+    /**新任务*/
+    public static final String EVALUATION_STATUS_NEW = "0";
+    /**评审中*/
+    public static final String EVALUATION_STATUS_PROCESSING = "1";
+    /**已完成*/
+    public static final String EVALUATION_STATUS_END = "2";
 }

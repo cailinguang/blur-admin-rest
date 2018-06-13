@@ -1,5 +1,6 @@
 package com.company.project.service.impl;
 
+import com.company.project.core.ServiceException;
 import com.company.project.dao.EvaluationLibaryMapper;
 import com.company.project.dao.EvaluationLibaryNodeMapper;
 import com.company.project.model.EvaluationLibary;
@@ -11,6 +12,7 @@ import com.company.project.service.TaskService;
 import com.company.project.service.UserService;
 import com.company.project.utils.Constants;
 import com.company.project.utils.SecurityUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -100,16 +102,73 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void updateTask(EvaluationLibary evaluation) {
-        evaluationLibaryMapper.updateByPrimaryKeySelective(evaluation);
+    public void updateTask(EvaluationLibary evaluation,String type) {
+        EvaluationLibary update = new EvaluationLibary();
+        update.setId(evaluation.getId());
+        update.setStatus(getEvaluationStatusFromType(type));
+        evaluationLibaryMapper.updateByPrimaryKeySelective(update);
 
         List<EvaluationLibaryNode> selectNodes = evaluation.getSelectNodes();
         selectNodes.forEach(e->{
-            e.getChildren().forEach(e2->{
-
-            });
+            saveNodes(e,type);
         });
 
+    }
+
+    private void saveNodes(EvaluationLibaryNode e,String type) {
+        if(e.getType().equals(Constants.VDA_TYPE_QUESTION) && StringUtils.isNotBlank(e.getSeverityLevel())){
+            EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
+            updateNode.setId(e.getId());
+            updateNode.setStatus(getEvaluationQuestionStatusFromType(type));
+            updateNode.setSeverityLevel(e.getSeverityLevel());
+            evaluationLibaryNodeMapper.updateByPrimaryKeySelective(updateNode);
+        }
+        if(e.getType().equals(Constants.VDA_TYPE_LEVEL)){
+            EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
+            updateNode.setId(e.getId());
+            updateNode.setLevelIsApproved(e.getLevelIsApproved());
+            evaluationLibaryNodeMapper.updateByPrimaryKeySelective(updateNode);
+        }
+        else if(e.getType().equals(Constants.VDA_TYPE_CONTROL) && e.getChildren().size()==0){
+            EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
+            updateNode.setId(e.getId());
+            updateNode.setComplianceLevel(e.getComplianceLevel());
+            //TODO evidences
+            evaluationLibaryNodeMapper.updateByPrimaryKeySelective(updateNode);
+        }
+        e.getChildren().forEach(e1->{
+            saveNodes(e1,type);
+        });
+    }
+
+    private String getEvaluationStatusFromType(String type){
+        if("save".equals(type)){
+            return Constants.EVALUATION_STATUS_PROCESSING;
+        }
+        else if("commit".equals(type)){
+            return Constants.EVALUATION_STATUS_PROCESSING;
+        }
+        else if("review".equals(type)){
+            return Constants.EVALUATION_STATUS_END;
+        }
+        else{
+            throw new ServiceException("无效的type!");
+        }
+    }
+
+    private String getEvaluationQuestionStatusFromType(String type){
+        if("save".equals(type)){
+            return Constants.EVALUATION_QUESTION_STATUS_PROCESSING;
+        }
+        else if("commit".equals(type)){
+            return Constants.EVALUATION_QUESTION_STATUS_SUBMITTED;
+        }
+        else if("review".equals(type)){
+            return Constants.EVALUATION_QUESTION_STATUS_REVIEW;
+        }
+        else{
+            throw new ServiceException("无效的type!");
+        }
     }
 
     private void _children(EvaluationLibaryNode parent){

@@ -50,20 +50,22 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
             }
         });
 
-        saveNodes(applicability.getSelectNodes(),indexed,applicability.getId(),"0");
+        List<ApplicabilityLibaryNode> batchInserts = new ArrayList();
+        saveNodes(applicability.getSelectNodes(),indexed,applicability.getId(),"0",batchInserts);
+        applicabilityLibaryNodeMapper.batchInsert(batchInserts);
     }
 
-    private void saveNodes(List<ApplicabilityLibaryNode> selectNodes, Map<String,StandardLibaryNode> indexed, String applicabilityId,String parentId) {
+    private void saveNodes(List<ApplicabilityLibaryNode> selectNodes, Map<String,StandardLibaryNode> indexed, String applicabilityId,String parentId,List<ApplicabilityLibaryNode> batchInserts) {
         selectNodes.forEach(node->{
             String nodeId = node.getId();
 
             if( node.getApplicability()!=null&&node.getApplicability()==true || (node.getType().equals(Constants.VDA_TYPE_LEVEL) || node.getType().equals(Constants.VDA_TYPE_CONTROL))){
 
-                node.setId(null);
+                node.setId(UUID.randomUUID().toString().replaceAll("-",""));
                 node.setParentId(parentId);
                 node.setApplicabilityId(applicabilityId);
                 node.setStandardNodeId(nodeId);
-                applicabilityLibaryNodeMapper.insert(node);
+                batchInserts.add(node);
 
                 if(node.getType().equals(Constants.VDA_TYPE_QUESTION)){
 
@@ -76,9 +78,9 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
                         childrens.add(target);
                     });
 
-                    saveNodes(childrens,indexed,applicabilityId,node.getId());
+                    saveNodes(childrens,indexed,applicabilityId,node.getId(),batchInserts);
                 }else{
-                    saveNodes(node.getChildren(),indexed,applicabilityId,node.getId());
+                    saveNodes(node.getChildren(),indexed,applicabilityId,node.getId(),batchInserts);
                 }
 
             }

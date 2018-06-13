@@ -78,7 +78,7 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
     @Override
     public void createEvaluation(EvaluationLibary evaluation) {
         evaluation.setCreateTime(new Date());
-        evaluation.setStatus(EVALUATION_STATUS_PROCESSING);
+        evaluation.setStatus(Constants.EVALUATION_STATUS_NEW);
         evaluationLibaryMapper.insert(evaluation);
 
         System.out.println(evaluation.getId());
@@ -96,16 +96,18 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
             }
         });
 
-        saveNodes(evaluation.getSelectNodes(),indexed,evaluation.getId(),"0");
+        List<EvaluationLibaryNode> batchInserts = new ArrayList();
+        saveNodes(evaluation.getSelectNodes(),indexed,evaluation.getId(),"0",batchInserts);
+        evaluationLibaryNodeMapper.batchInsert(batchInserts);
     }
 
-    private void saveNodes(List<EvaluationLibaryNode> selectNodes, Map<String,ApplicabilityLibaryNode> indexed, String evaluationId,String parentId) {
+    private void saveNodes(List<EvaluationLibaryNode> selectNodes, Map<String,ApplicabilityLibaryNode> indexed, String evaluationId,String parentId,List<EvaluationLibaryNode> batchInserts) {
         selectNodes.forEach(node->{
             String nodeId = node.getId();
 
             if( node.getApplicability()!=null&&node.getApplicability()==true || (node.getType().equals(Constants.VDA_TYPE_LEVEL) || node.getType().equals(Constants.VDA_TYPE_CONTROL))){
 
-                node.setId(null);
+                node.setId(UUID.randomUUID().toString().replaceAll("-",""));
                 node.setParentId(parentId);
                 node.setEvaluationId(evaluationId);
                 node.setApplicabilityNodeId(nodeId);
@@ -122,12 +124,12 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
                         childrens.add(target);
                     });
 
-                    saveNodes(childrens,indexed,evaluationId,node.getId());
+                    saveNodes(childrens,indexed,evaluationId,node.getId(),batchInserts);
                 }else{
-                    saveNodes(node.getChildren(),indexed,evaluationId,node.getId());
+                    saveNodes(node.getChildren(),indexed,evaluationId,node.getId(),batchInserts);
                 }
 
-                evaluationLibaryNodeMapper.insert(node);
+                batchInserts.add(node);
             }
 
 
