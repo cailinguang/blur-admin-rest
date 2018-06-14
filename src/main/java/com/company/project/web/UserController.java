@@ -7,9 +7,7 @@ import com.company.project.service.UserService;
 import com.company.project.utils.PasswordUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -27,12 +25,8 @@ public class UserController {
     @GetMapping
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size,@RequestParam(defaultValue = "") String deptId) {
         PageHelper.startPage(page, size);
-        Condition condition = new Condition(User.class);
-        if(StringUtils.isNotBlank(deptId)){
-            condition.createCriteria().andEqualTo("deptId",deptId);
-        }
 
-        List<User> list = userService.findAllByCondition(condition);
+        List<User> list = userService.findUsersByDeptId(deptId);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }

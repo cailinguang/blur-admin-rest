@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 public class User {
@@ -30,6 +31,17 @@ public class User {
     private String phone;
     private String email;
     private String status;
+
+    @Transient
+    private List<Role> roles;
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 
     /**
      * @return id
