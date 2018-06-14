@@ -9,6 +9,9 @@ public class Constants {
     public final static String VDA_TYPE_LEVEL = "vda_level";
     public final static String VDA_TYPE_CONTROL = "vda_control";
 
+    public static final String USER_STATUS_UN_LOCK = "1";
+    public static final String USER_STATUS_LOCK = "2";
+
 
     /**信息安全联络员*/
     public static final String ROLE_SECURITY_LIAISON = "liaison";

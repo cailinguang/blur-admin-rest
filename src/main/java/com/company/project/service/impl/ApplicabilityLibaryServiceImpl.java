@@ -1,6 +1,7 @@
 package com.company.project.service.impl;
 
 import com.company.project.core.AbstractService;
+import com.company.project.core.ServiceException;
 import com.company.project.dao.*;
 import com.company.project.dao.ApplicabilityLibaryNodeMapper;
 import com.company.project.model.*;
@@ -28,6 +29,8 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
     private ApplicabilityLibaryMapper applicabilityLibaryMapper;
     @Autowired
     private ApplicabilityLibaryNodeMapper applicabilityLibaryNodeMapper;
+    @Resource
+    private EvaluationLibaryMapper evaluationLibaryMapper;
 
     @Override
     public void createApplicabilityLibary(ApplicabilityLibary applicability) {
@@ -178,7 +181,12 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
 
     @Override
     public void deleteLibary(String id) {
-
+        EvaluationLibary countCondition = new EvaluationLibary();
+        countCondition.setApplicabilityId(id);
+        int count = evaluationLibaryMapper.selectCount(countCondition);
+        if(count>0){
+            throw new ServiceException("已有项目评审使用该适用库,不能删除!");
+        }
         applicabilityLibaryMapper.deleteByPrimaryKey(id);
 
         Condition condition = new Condition(ApplicabilityLibaryNode.class);

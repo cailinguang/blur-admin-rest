@@ -32,6 +32,9 @@ public interface PermissionMapper {
     @Delete("delete from user_role where role_id=#{param1} and user_id=#{param2} ")
     public int deleteRoleUser(String roleId,String userId);
 
+    @Delete("delete from user_role where user_id=#{param1}")
+    public int deleteRoleUserByUserId(String userId);
+
     @Delete("delete from role_menu where role_id=#{roleId}")
     public int deleteRoleMenu(String roleId);
 

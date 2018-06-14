@@ -15,4 +15,6 @@ public interface UserService extends Service<User> {
     public List<User> findUsersByDeptId(String deptId);
 
     public User getCurrentUser();
+
+    void updateUser(User user);
 }

@@ -86,6 +86,12 @@ public class TaskServiceImpl implements TaskService {
         //sort
         sort(results);
 
+        for(int i=results.size()-1;i>=0;i--){
+            if(results.get(i).getChildren().size()==0){
+                results.remove(i);
+            }
+        }
+
         return results;
     }
 

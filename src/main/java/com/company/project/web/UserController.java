@@ -52,7 +52,7 @@ public class UserController {
     @PutMapping("/{id}")
     public Result update(@PathVariable("id") String id,@RequestBody User user) {
         user.setId(id);
-        userService.update(user);
+        userService.updateUser(user);
         return ResultGenerator.genSuccessResult();
     }
 

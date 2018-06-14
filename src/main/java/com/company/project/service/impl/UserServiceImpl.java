@@ -53,4 +53,14 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         return userMapper.selectByUserName(userName);
     }
 
+    @Override
+    public void updateUser(User user) {
+        user.setPassword(null);
+        update(user);
+        if(user.getRoles()!=null&&user.getRoles().size()!=0){
+            permissionMapper.deleteRoleUserByUserId(user.getId());
+            permissionMapper.insertRoleUser(user.getRoles().get(0).getId(),user.getId());
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import com.company.project.dao.UserMapper;
 import com.company.project.model.Menu;
 import com.company.project.model.Role;
 import com.company.project.model.User;
+import com.company.project.utils.Constants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -47,6 +48,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String md5pass = DigestUtils.md5Hex(username+"@"+password);
         if(!md5pass.equals(user.getPassword())){
             throw new BadCredentialsException("用户名或者密码错误!");
+        }
+
+        if(Constants.USER_STATUS_LOCK.equals(user.getStatus())){
+            throw new BadCredentialsException("用户被锁定!");
         }
 
 
