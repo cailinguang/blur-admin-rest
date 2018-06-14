@@ -62,6 +62,14 @@ public class UserController {
         return ResultGenerator.genSuccessResult();
     }
 
+    @PutMapping("/resetpassword/{id}")
+    public Result resetPassword(@PathVariable("id") String id){
+        User user = userService.findById(id);
+        user.setPassword(PasswordUtils.digestPassword(user.getUsername(),PasswordUtils.DEFAULT_PASSWORD));
+        userService.update(user);
+        return ResultGenerator.genSuccessResult(PasswordUtils.DEFAULT_PASSWORD);
+    }
+
     @GetMapping("/{id}")
     public Result detail(@PathVariable String id) {
         User user = userService.findById(id);

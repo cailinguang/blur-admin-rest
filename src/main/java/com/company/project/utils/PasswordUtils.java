@@ -11,6 +11,8 @@ public class PasswordUtils {
     private final static String upper_word = lower_word.toUpperCase();
     private final static String special_word = "!@#$%&<>.-=+";
 
+    public final static String DEFAULT_PASSWORD = "!password";
+
     public static String randomPassword(){
         while (true){
             String pass = RandomStringUtils.random(8,lower_word+upper_word+special_word);

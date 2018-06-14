@@ -19,10 +19,29 @@
     <result column="compliance_level" jdbcType="VARCHAR" property="complianceLevel" />
     <result column="node_position" jdbcType="INTEGER" property="nodePosition" />
     <result column="applicability_node_id" jdbcType="VARCHAR" property="applicabilityNodeId" />
-    <association property="assign" column="assign_user" select="com.company.project.dao.UserMapper.selectByPrimaryKey"/>
+    <association property="assign" columnPrefix="user_" javaType="com.company.project.model.User" resultMap="com.company.project.dao.UserMapper.BaseResultMap"/>
+    <collection  property="attachments" columnPrefix="att_" javaType="list" ofType="com.company.project.model.Attachment" resultMap="com.company.project.dao.AttachmentMapper.BaseResultMap"/>
   </resultMap>
 
     <select id="slectAllChildrenNode" resultMap="BaseResultMap">
-        select * from  evaluation_libary_node where parent_id = #{param1} order by node_position
+        select n.*,
+         u.id as user_id, u.username as user_username, u.password as user_password, u.nick_name as user_nick_name, u.register_date as user_register_date,
+         u.dept_id as user_dept_id, u.phone as user_phone, u.email as user_email, u.status as user_status,
+         a.id as att_id, a.name as att_name, a.size as att_size, a.biz_id as att_biz_id, a.create_time as att_create_time, a.path as att_path
+        from  evaluation_libary_node n
+        LEFT JOIN user u on u.id=n.assign_user
+        LEFT JOIN attachment a on n.id=a.biz_id
+        where n.parent_id = #{param1} order by n.node_position
+    </select>
+
+    <select id="selectNodesByEvaluationIdWithAssignUser" resultMap="BaseResultMap">
+        select n.*,
+         u.id as user_id, u.username as user_username, u.password as user_password, u.nick_name as user_nick_name, u.register_date as user_register_date,
+         u.dept_id as user_dept_id, u.phone as user_phone, u.email as user_email, u.status as user_status,
+         a.id as att_id, a.name as att_name, a.size as att_size, a.biz_id as att_biz_id, a.create_time as att_create_time, a.path as att_path
+        from  evaluation_libary_node n
+        LEFT JOIN user u on u.id=n.assign_user
+        LEFT JOIN attachment a on n.id=a.biz_id
+        where n.evaluation_id = #{param1}
     </select>
 </mapper>

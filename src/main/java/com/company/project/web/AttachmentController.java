@@ -82,5 +82,4 @@ public class AttachmentController {
         Attachment attachment = attachmentService.findById(id);
         return ResultGenerator.genSuccessResult(attachment);
     }
-
 }

@@ -55,6 +55,17 @@ public class EvaluationLibaryNode {
     @Transient
     private User assign;
 
+    @Transient
+    private List<Attachment> attachments;
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
     public User getAssign() {
         return assign;
     }

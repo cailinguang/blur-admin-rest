@@ -7,8 +7,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 public interface EvaluationLibaryNodeMapper extends Mapper<EvaluationLibaryNode> {
-    @Select("select * from evaluation_libary_node where evaluation_id=#{1} ")
-    @ResultMap("com.company.project.dao.EvaluationLibaryNodeMapper.BaseResultMap")
+    //sql in xml
     List<EvaluationLibaryNode> selectNodesByEvaluationIdWithAssignUser(String evaluationId);
 
 

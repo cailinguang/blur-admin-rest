@@ -116,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void saveNodes(EvaluationLibaryNode e,String type) {
-        if(e.getType().equals(Constants.VDA_TYPE_QUESTION) && StringUtils.isNotBlank(e.getSeverityLevel())){
+        if(e.getType().equals(Constants.VDA_TYPE_QUESTION)){
             EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
             updateNode.setId(e.getId());
             updateNode.setStatus(getEvaluationQuestionStatusFromType(type));
