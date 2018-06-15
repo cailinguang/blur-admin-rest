@@ -2,6 +2,9 @@ package com.company.project.configurer.jwt.filter;
 
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
+import com.company.project.model.User;
+import com.company.project.service.UserService;
+import com.company.project.utils.SpringContextUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,10 +31,12 @@ public class TokenAuthenticationService {
 
     // JWT生成方法
     static void addAuthentication(HttpServletResponse response, Authentication auth) {
+        User user = SpringContextUtil.getBean(UserService.class).findUserByUserName(auth.getName());
         // 生成JWT
         String JWT = Jwts.builder()
                 // 保存权限（角色）
                 .claim("authorities", StringUtils.join(AuthorityUtils.authorityListToSet(auth.getAuthorities()),","))
+                .claim("nickName",user.getNickName())
                 // 用户名写入标题
                 .setSubject(auth.getName())
                 // 有效期设置

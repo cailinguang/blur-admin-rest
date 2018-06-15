@@ -34,7 +34,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
             servletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
             servletResponse.setStatus(HttpServletResponse.SC_OK);
 
-            Result result = ResultGenerator.genFailResult(e.getMessage());
+            Result result = new Result()
+                    .setCode(401)
+                    .setMessage(e.getMessage());
 
             response.getWriter().write(result.toString());
             return;

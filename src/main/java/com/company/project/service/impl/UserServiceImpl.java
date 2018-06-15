@@ -2,10 +2,13 @@ package com.company.project.service.impl;
 
 import com.company.project.core.AbstractService;
 import com.company.project.core.ServiceException;
+import com.company.project.dao.DeptMapper;
 import com.company.project.dao.PermissionMapper;
 import com.company.project.dao.UserMapper;
 import com.company.project.model.User;
 import com.company.project.service.UserService;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     private UserMapper userMapper;
     @Resource
     private PermissionMapper permissionMapper;
+    @Resource
+    private DeptMapper deptMapper;
 
     @Override
     public void saveUser(User user) {
@@ -50,7 +55,12 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         String  userName =  (String)SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return userMapper.selectByUserName(userName);
+        User user = userMapper.selectByUserName(userName);
+        if(user.getDeptId()!=null){
+            user.setDept(deptMapper.selectByPrimaryKey(user.getDeptId()));
+        }
+        user.setPassword(null);
+        return user;
     }
 
     @Override
@@ -61,6 +71,23 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
             permissionMapper.deleteRoleUserByUserId(user.getId());
             permissionMapper.insertRoleUser(user.getRoles().get(0).getId(),user.getId());
         }
+    }
+
+    @Override
+    public User findUserByUserName(String userName) {
+        return userMapper.selectByUserName(userName);
+    }
+
+    @Override
+    public void updatePassword(String userId, String oldPassword, String password) {
+        User user = userMapper.selectByPrimaryKey(userId);
+
+        String md5pass = DigestUtils.md5Hex(user.getUsername()+"@"+oldPassword);
+        if(!md5pass.equals(user.getPassword())){
+            throw new ServiceException("原密码错误!");
+        }
+        user.setPassword(DigestUtils.md5Hex(user.getUsername()+"@"+password));
+        userMapper.updateByPrimaryKeySelective(user);
     }
 
 }

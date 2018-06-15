@@ -17,4 +17,8 @@ public interface UserService extends Service<User> {
     public User getCurrentUser();
 
     void updateUser(User user);
+
+    User findUserByUserName(String userName);
+
+    void updatePassword(String userId, String oldPassword, String password);
 }

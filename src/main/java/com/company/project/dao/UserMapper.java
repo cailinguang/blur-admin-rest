@@ -10,9 +10,7 @@ import java.util.List;
 
 public interface UserMapper extends Mapper<User> {
 
-    @Select("select * from user where username=#{username}")
-    @ResultMap("com.company.project.dao.UserMapper.BaseResultMap")
-    public User selectByUserName(String userName);
+    public User selectByUserName(@Param("userName") String userName);
 
     //sql in xml
     public List<User> selectByDeptId(@Param("deptId") String deptId);

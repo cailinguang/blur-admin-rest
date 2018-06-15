@@ -35,6 +35,18 @@ public class User {
     @Transient
     private List<Role> roles;
 
+    //查询当前用户部门
+    @Transient
+    private Dept dept;
+
+    public Dept getDept() {
+        return dept;
+    }
+
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }

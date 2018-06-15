@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * Created by CodeGenerator on 2018/04/17.
@@ -64,11 +65,19 @@ public class UserController {
         return ResultGenerator.genSuccessResult(PasswordUtils.DEFAULT_PASSWORD);
     }
 
-    @GetMapping("/{id}")
-    public Result detail(@PathVariable String id) {
-        User user = userService.findById(id);
-        return ResultGenerator.genSuccessResult(user);
+
+    @GetMapping("/currentUser")
+    public Result currentUser(){
+        return ResultGenerator.genSuccessResult(userService.getCurrentUser());
     }
 
+    @PutMapping("/updatePassword")
+    public Result updatePassword(@RequestBody Map<String,String> params){
+        String oldPassword = params.get("oldPassword");
+        String password = params.get("password");
+        String id = params.get("id");
+        userService.updatePassword(id,oldPassword,password);
+        return ResultGenerator.genSuccessResult();
+    }
 
 }
