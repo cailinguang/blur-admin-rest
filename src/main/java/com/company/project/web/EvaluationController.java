@@ -5,6 +5,7 @@ import com.company.project.core.ResultGenerator;
 import com.company.project.model.EvaluationLibary;
 import com.company.project.model.EvaluationLibaryNode;
 import com.company.project.service.EvaluationService;
+import com.company.project.utils.Constants;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,77 @@ public class EvaluationController {
         return ResultGenerator.genSuccessResult(nodes);
     }
 
+
+    /**
+     * 查询库节点 with scope
+     * @param standardId
+     * @return
+     */
+    @GetMapping("/standardNodesWithScope")
+    public Result queryStandardNodesWithScope(@RequestParam String evaluationId,@RequestParam(defaultValue = "0") int level){
+        List<EvaluationLibaryNode> nodes = evaluationService.queryStandardNodes(evaluationId,level);
+        //计算分值
+        nodes.forEach(node->{
+            calculateScope(node);
+        });
+
+        return ResultGenerator.genSuccessResult(nodes);
+    }
+
+    private double calculateScope(EvaluationLibaryNode node) {
+        if(node.getType().equals(Constants.VDA_TYPE_CHAPTER)){
+            final double[] scope = {0};
+            node.getChildren().forEach(child->{
+                scope[0] = scope[0]+calculateScope(child);
+            });
+            node.setScope(scope[0]/node.getChildren().size());
+            return scope[0]/node.getChildren().size();
+        }
+        else if(node.getType().equals(Constants.VDA_TYPE_QUESTION)){
+            if(node.getApplicability()==null){
+                return 0;
+            }
+            final double[] scope = {0};
+            node.getChildren().forEach(child->{
+                scope[0] = scope[0]+calculateScope(child);
+            });
+            node.setScope(scope[0]);
+            return scope[0];
+        }
+        else if(node.getType().equals(Constants.VDA_TYPE_LEVEL)){
+            if(Constants.EVALUATION_LEVEL_APPROLED_YES.equals(node.getLevelIsApproved())){
+                return 1;
+            }
+            if(node.getChildren().size()>0){
+                final double[] scope = {0};
+                node.getChildren().forEach(child->{
+                    scope[0] = scope[0]+calculateScope(child);
+                });
+                node.setScope(scope[0]/node.getChildren().size()*0.9);
+                return scope[0]/node.getChildren().size()*0.9;
+            }else{
+                return 0;
+            }
+
+        }
+
+        else if(node.getType().equals(Constants.VDA_TYPE_CONTROL)){
+            if(node.getChildren().size()!=0){
+                final double[] scope = {0};
+                node.getChildren().forEach(child->{
+                    scope[0] = scope[0]+calculateScope(child);
+                });
+                node.setScope(scope[0]/node.getChildren().size());
+                return scope[0]/node.getChildren().size();
+            }else{
+                if(node.getComplianceLevel()!=null&&node.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_COMPLIANT)){
+                    return 1;
+                }
+                return 0;
+            }
+        }
+        else return 0d;
+    }
 
     /**
      * 新增适用性库

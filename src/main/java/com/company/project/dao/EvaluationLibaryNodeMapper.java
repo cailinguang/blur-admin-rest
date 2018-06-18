@@ -33,4 +33,10 @@ public interface EvaluationLibaryNodeMapper extends Mapper<EvaluationLibaryNode>
             "</foreach>" +
             "</script>")
     int batchInsert(@Param("list")List<EvaluationLibaryNode> nodes);
+
+    @Select("select count(*) from evaluation_libary_node where evaluation_id=#{param1}")
+    int countByEvaluationId(String evaluationId);
+
+    @Select("select count(*) from evaluation_libary_node where evaluation_id=#{param1} and status=#{param2}")
+    int countByStatus(String evaluationId, String status);
 }

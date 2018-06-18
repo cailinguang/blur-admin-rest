@@ -58,6 +58,17 @@ public class EvaluationLibaryNode {
     @Transient
     private List<Attachment> attachments;
 
+    @Transient
+    private double scope;
+
+    public double getScope() {
+        return scope;
+    }
+
+    public void setScope(double scope) {
+        this.scope = scope;
+    }
+
     public List<Attachment> getAttachments() {
         return attachments;
     }

@@ -155,7 +155,7 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
         List<EvaluationLibaryNode> selectNodes = evaluation.getSelectNodes();
         selectNodes.forEach(e->{
             e.getChildren().forEach(e2->{
-                if(e2.getApplicability()!=null&&e2.getApplicability()==true && e2.getType().equals(Constants.VDA_TYPE_QUESTION)) {
+                if(e2.getApplicability()!=null&&e2.getApplicability()==true && e2.getType().equals(Constants.VDA_TYPE_QUESTION) && e2.getAssignUser()!=null) {
                     EvaluationLibaryNode update = new EvaluationLibaryNode();
                     update.setId(e2.getId());
                     update.setAssignUser(e2.getAssignUser());

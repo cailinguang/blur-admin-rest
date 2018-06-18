@@ -111,7 +111,7 @@ public class TaskServiceImpl implements TaskService {
     public void updateTask(EvaluationLibary evaluation,String type) {
         EvaluationLibary update = new EvaluationLibary();
         update.setId(evaluation.getId());
-        update.setStatus(getEvaluationStatusFromType(type));
+        update.setStatus(getEvaluationStatusFromType(evaluation.getId(),type));
         evaluationLibaryMapper.updateByPrimaryKeySelective(update);
 
         List<EvaluationLibaryNode> selectNodes = evaluation.getSelectNodes();
@@ -147,7 +147,7 @@ public class TaskServiceImpl implements TaskService {
         });
     }
 
-    private String getEvaluationStatusFromType(String type){
+    private String getEvaluationStatusFromType(String evaluationId,String type){
         if("save".equals(type)){
             return Constants.EVALUATION_STATUS_PROCESSING;
         }
@@ -155,7 +155,14 @@ public class TaskServiceImpl implements TaskService {
             return Constants.EVALUATION_STATUS_PROCESSING;
         }
         else if("review".equals(type)){
-            return Constants.EVALUATION_STATUS_END;
+            //如果是最后一个复核，修改项目状态:'已完成'
+
+            int checkStatusCount = evaluationLibaryNodeMapper.countByStatus(evaluationId,Constants.EVALUATION_QUESTION_STATUS_REVIEW);
+            int allCount = evaluationLibaryNodeMapper.countByEvaluationId(evaluationId);
+            if(checkStatusCount>=allCount-1){
+                return Constants.EVALUATION_STATUS_END;
+            }
+            return Constants.EVALUATION_STATUS_PROCESSING;
         }
         else{
             throw new ServiceException("无效的type!");
