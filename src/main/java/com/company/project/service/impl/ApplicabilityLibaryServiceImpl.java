@@ -169,7 +169,7 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
         List<ApplicabilityLibaryNode> selectNodes = applicability.getSelectNodes();
         selectNodes.forEach(e->{
             e.getChildren().forEach(e2->{
-                if(e2.getApplicability()!=null&&e2.getApplicability()==true && e2.getType().equals(Constants.VDA_TYPE_QUESTION)) {
+                if(e2.getApplicability()!=null&&e2.getApplicability()==true && e2.getType().equals(Constants.VDA_TYPE_QUESTION) && e2.getTargetValue()!=null) {
                     ApplicabilityLibaryNode update = new ApplicabilityLibaryNode();
                     update.setId(e2.getId());
                     update.setTargetValue(e2.getTargetValue());

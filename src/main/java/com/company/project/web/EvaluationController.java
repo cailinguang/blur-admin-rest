@@ -60,8 +60,8 @@ public class EvaluationController {
      * @return
      */
     @GetMapping("/standardNodesWithScope")
-    public Result queryStandardNodesWithScope(@RequestParam String evaluationId,@RequestParam(defaultValue = "0") int level){
-        List<EvaluationLibaryNode> nodes = evaluationService.queryStandardNodes(evaluationId,level);
+    public Result queryStandardNodesWithScope(@RequestParam String evaluationId){
+        List<EvaluationLibaryNode> nodes = evaluationService.queryStandardNodes(evaluationId,0);
         //计算分值
         nodes.forEach(node->{
             calculateScope(node);
@@ -80,9 +80,6 @@ public class EvaluationController {
             return scope[0]/node.getChildren().size();
         }
         else if(node.getType().equals(Constants.VDA_TYPE_QUESTION)){
-            if(node.getApplicability()==null){
-                return 0;
-            }
             final double[] scope = {0};
             node.getChildren().forEach(child->{
                 scope[0] = scope[0]+calculateScope(child);
