@@ -2,6 +2,7 @@ package com.company.project.service;
 
 import com.company.project.model.EvaluationLibary;
 import com.company.project.model.EvaluationLibaryNode;
+import com.company.project.model.TaskLog;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface TaskService {
     EvaluationLibaryNode queryChildrenNodes(String parentId);
 
     void updateTask(EvaluationLibary evaluation,String type);
+
+    List<TaskLog> queryAllTaskLog(String evaluationId);
 }

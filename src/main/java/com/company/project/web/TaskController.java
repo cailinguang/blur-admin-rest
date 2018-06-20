@@ -61,4 +61,9 @@ public class TaskController {
         taskService.updateTask(applicability,type);
         return ResultGenerator.genSuccessResult();
     }
+
+    @GetMapping("/logs")
+    public Result logs(@RequestParam String evaluationId){
+        return ResultGenerator.genSuccessResult(taskService.queryAllTaskLog(evaluationId));
+    }
 }

@@ -1,10 +1,13 @@
 package com.company.project.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.company.project.core.ServiceException;
 import com.company.project.dao.EvaluationLibaryMapper;
 import com.company.project.dao.EvaluationLibaryNodeMapper;
+import com.company.project.dao.TaskLogMapper;
 import com.company.project.model.EvaluationLibary;
 import com.company.project.model.EvaluationLibaryNode;
+import com.company.project.model.TaskLog;
 import com.company.project.model.User;
 import com.company.project.service.EvaluationService;
 import com.company.project.service.RoleService;
@@ -18,8 +21,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -37,6 +42,8 @@ public class TaskServiceImpl implements TaskService {
     private UserService userService;
     @Resource
     private EvaluationService evaluationService;
+    @Resource
+    private TaskLogMapper taskLogMapper;
 
     @Override
     public List<EvaluationLibary> findAll() {
@@ -119,6 +126,28 @@ public class TaskServiceImpl implements TaskService {
             saveNodes(e,type);
         });
 
+        TaskLog log = new TaskLog();
+        log.setTime(new Date());
+        log.setName(getTypeDesc(type)+":"+evaluation.getName());
+        if(selectNodes.size()>0){
+            EvaluationLibaryNode question = selectNodes.get(0);
+            log.setQuestion(question.getName());
+            log.setQuestionSeverity(question.getSeverityLevel());
+            log.setQuestionStatus(question.getStatus());
+            try {
+                log.setControlJson(JSON.toJSONString(question.getChildren(),true).getBytes("utf8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public List<TaskLog> queryAllTaskLog(String evaluationId) {
+        Example example = new Example(TaskLog.class);
+        example.createCriteria().andEqualTo("evaluationId",evaluationId);
+        example.orderBy("time").desc();
+        return taskLogMapper.selectByExample(example);
     }
 
     private void saveNodes(EvaluationLibaryNode e,String type) {
@@ -129,7 +158,7 @@ public class TaskServiceImpl implements TaskService {
             updateNode.setSeverityLevel(e.getSeverityLevel());
             evaluationLibaryNodeMapper.updateByPrimaryKeySelective(updateNode);
         }
-        if(e.getType().equals(Constants.VDA_TYPE_LEVEL)){
+        else if(e.getType().equals(Constants.VDA_TYPE_LEVEL)){
             EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
             updateNode.setId(e.getId());
             updateNode.setLevelIsApproved(e.getLevelIsApproved());
@@ -182,6 +211,19 @@ public class TaskServiceImpl implements TaskService {
         else{
             throw new ServiceException("无效的type!");
         }
+    }
+
+    private String getTypeDesc(String type){
+        if("save".equals(type)){
+            return "保存";
+        }
+        else if("commit".equals(type)){
+            return "提交";
+        }
+        else if("review".equals(type)){
+            return "复核";
+        }
+        return null;
     }
 
     private void _children(EvaluationLibaryNode parent){
