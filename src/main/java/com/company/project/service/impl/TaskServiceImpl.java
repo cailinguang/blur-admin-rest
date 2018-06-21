@@ -126,28 +126,44 @@ public class TaskServiceImpl implements TaskService {
             saveNodes(e,type);
         });
 
+        User currentUser = userService.getCurrentUser();
+
         TaskLog log = new TaskLog();
         log.setTime(new Date());
-        log.setName(getTypeDesc(type)+":"+evaluation.getName());
+        log.setName(evaluation.getName());
+        log.setEvaluationId(evaluation.getId());
+        log.setType(type);
+        log.setUser(currentUser.getId());
+        log.setDept(currentUser.getDeptId());
         if(selectNodes.size()>0){
             EvaluationLibaryNode question = selectNodes.get(0);
             log.setQuestion(question.getName());
             log.setQuestionSeverity(question.getSeverityLevel());
             log.setQuestionStatus(question.getStatus());
+            EvaluationLibaryNode chapter = evaluationLibaryNodeMapper.selectByPrimaryKey(question.getParentId());
+            log.setChapter(chapter.getName());
             try {
-                log.setControlJson(JSON.toJSONString(question.getChildren(),true).getBytes("utf8"));
+                log.setControlJson(JSON.toJSONString(question.getChildren()).getBytes("utf8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
+        taskLogMapper.insert(log);
     }
 
     @Override
     public List<TaskLog> queryAllTaskLog(String evaluationId) {
-        Example example = new Example(TaskLog.class);
-        example.createCriteria().andEqualTo("evaluationId",evaluationId);
-        example.orderBy("time").desc();
-        return taskLogMapper.selectByExample(example);
+        List<TaskLog> list = taskLogMapper.queryAllTask(evaluationId);
+        list.forEach(e->{
+            if(e.getControlJson()!=null){
+                try {
+                    e.setControlStr(new String(e.getControlJson(),"utf8"));
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        return list;
     }
 
     private void saveNodes(EvaluationLibaryNode e,String type) {

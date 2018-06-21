@@ -1,5 +1,7 @@
 package com.company.project.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 import javax.persistence.*;
 
@@ -15,6 +17,11 @@ public class TaskLog {
 
     private String user;
 
+    @Transient
+    private String userName;
+    @Transient
+    private String deptName;
+
     private String dept;
 
     private String question;
@@ -26,10 +33,18 @@ public class TaskLog {
     private String questionStatus;
 
     @Column(name = "control_json")
+    @JSONField(serialize = false)
     private byte[] controlJson;
+
+    @Transient
+    private String controlStr;
 
     @Column(name="evaluation_id")
     private String evaluationId;
+
+    private String type;
+
+    private String chapter;
 
     public String getEvaluationId() {
         return evaluationId;
@@ -163,5 +178,45 @@ public class TaskLog {
      */
     public void setControlJson(byte[] controlJson) {
         this.controlJson = controlJson;
+    }
+
+    public String getControlStr() {
+        return controlStr;
+    }
+
+    public void setControlStr(String controlStr) {
+        this.controlStr = controlStr;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
     }
 }
