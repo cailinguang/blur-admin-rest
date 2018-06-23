@@ -15,6 +15,9 @@ import tk.mybatis.mapper.entity.Condition;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -38,9 +41,9 @@ public class AttachmentController {
 
     @PostMapping
     public Result add(@RequestParam("file")MultipartFile file,@RequestParam("bizId")String bizId) throws Exception{
-        //String path = getClass().getClassLoader().getResource(File.separator).getFile() + File.separator + UUID.randomUUID().toString();
-        String path = new File(AttachmentController.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath()+
-                File.separator + "upload" + File.separator + UUID.randomUUID().toString();;
+        System.out.println(com.company.project.utils.FileUtils.getPath());
+
+        String path = com.company.project.utils.FileUtils.getPath() + File.separator + "upload" + File.separator + UUID.randomUUID().toString();;
 
         File pathFile = new File(path);
         if(!pathFile.getParentFile().exists()){
@@ -85,4 +88,6 @@ public class AttachmentController {
         Attachment attachment = attachmentService.findById(id);
         return ResultGenerator.genSuccessResult(attachment);
     }
+
+
 }
