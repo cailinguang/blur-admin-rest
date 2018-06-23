@@ -85,5 +85,8 @@ public class StandardLibaryServiceImpl extends AbstractService<StandardLibary> i
     @Override
     public void updateNode(StandardLibaryNode standardLibaryNode) {
         standardLibaryNodeMapper.updateByPrimaryKeySelective(standardLibaryNode);
+        //级联更新节点的描述
+        standardLibaryNodeMapper.updateApplicabilityNodeDescription(standardLibaryNode.getId(),standardLibaryNode.getDescription());
+        standardLibaryNodeMapper.updateEvaluationNodeDescription(standardLibaryNode.getId(),standardLibaryNode.getDescription());
     }
 }

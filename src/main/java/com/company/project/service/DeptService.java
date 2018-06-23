@@ -12,4 +12,6 @@ public interface DeptService extends Service<Dept> {
     List<Dept> findDeptByParent(String parent);
 
     public void deleteDept(String deptId);
+
+    List<Dept> queryCurrentUserChildrenDept();
 }

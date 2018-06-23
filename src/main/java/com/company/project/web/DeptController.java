@@ -28,6 +28,12 @@ public class DeptController {
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
+    @GetMapping("/childrenDept")
+    public Result list() {
+        List<Dept> list = deptService.queryCurrentUserChildrenDept();
+        return ResultGenerator.genSuccessResult(list);
+    }
+
     @PostMapping
     public Result add(@RequestBody Dept dept) {
         deptService.save(dept);

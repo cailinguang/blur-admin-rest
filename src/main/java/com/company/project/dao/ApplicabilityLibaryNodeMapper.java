@@ -4,6 +4,7 @@ import com.company.project.core.Mapper;
 import com.company.project.model.ApplicabilityLibaryNode;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -19,4 +20,7 @@ public interface ApplicabilityLibaryNodeMapper extends Mapper<ApplicabilityLibar
             "</foreach>" +
             "</script>")
     int batchInsert(@Param("list")List<ApplicabilityLibaryNode> nodes);
+
+    @Update("update evaluation_libary_node set target_value=#{param2} where applicability_node_id=#{param1}")
+    int updateEvaluationNodeTarget(String applicabilityNodeId, Float targetValue);
 }

@@ -7,6 +7,7 @@ import com.company.project.dao.UserMapper;
 import com.company.project.model.Dept;
 import com.company.project.model.User;
 import com.company.project.service.DeptService;
+import com.company.project.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -26,6 +27,8 @@ public class DeptServiceImpl extends AbstractService<Dept> implements DeptServic
     private DeptMapper deptMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserService userService;
 
     @Override
     public List<Dept> findDeptByParent(String parent) {
@@ -49,5 +52,18 @@ public class DeptServiceImpl extends AbstractService<Dept> implements DeptServic
             throw new ServiceException("请先删除子部门!");
         }
         deptMapper.deleteByPrimaryKey(deptId);
+    }
+
+    @Override
+    public List<Dept> queryCurrentUserChildrenDept() {
+        User user = userService.getCurrentUser();
+        List<Dept> depts = deptMapper.selectChildrenDept(user.getDeptId());
+        //remove currentDept parent id
+        depts.forEach(dept -> {
+            if(user.getDeptId().equals(dept.getId())){
+                dept.setParent("#");
+            }
+        });
+        return depts;
     }
 }

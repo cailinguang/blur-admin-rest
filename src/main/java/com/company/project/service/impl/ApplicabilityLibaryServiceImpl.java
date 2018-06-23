@@ -174,6 +174,7 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
                     update.setId(e2.getId());
                     update.setTargetValue(e2.getTargetValue());
                     applicabilityLibaryNodeMapper.updateByPrimaryKeySelective(update);
+                    applicabilityLibaryNodeMapper.updateEvaluationNodeTarget(e2.getId(),e2.getTargetValue());
                 }
             });
         });

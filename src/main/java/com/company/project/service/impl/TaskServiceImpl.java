@@ -116,6 +116,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTask(EvaluationLibary evaluation,String type) {
+        boolean isCiso = SecurityUtils.hasRole(Constants.ROLE_CISO);
         EvaluationLibary update = new EvaluationLibary();
         update.setId(evaluation.getId());
         update.setStatus(getEvaluationStatusFromType(evaluation.getId(),type));
@@ -139,7 +140,7 @@ public class TaskServiceImpl implements TaskService {
             EvaluationLibaryNode question = selectNodes.get(0);
             log.setQuestion(question.getName());
             log.setQuestionSeverity(question.getSeverityLevel());
-            log.setQuestionStatus(question.getStatus());
+            log.setQuestionStatus(isCiso ? question.getStatus() : getEvaluationQuestionStatusFromType(type));
             EvaluationLibaryNode chapter = evaluationLibaryNodeMapper.selectByPrimaryKey(question.getParentId());
             log.setChapter(chapter.getName());
             try {
@@ -167,10 +168,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void saveNodes(EvaluationLibaryNode e,String type) {
+        boolean isCiso = SecurityUtils.hasRole(Constants.ROLE_CISO);
         if(e.getType().equals(Constants.VDA_TYPE_QUESTION)){
             EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
             updateNode.setId(e.getId());
-            updateNode.setStatus(getEvaluationQuestionStatusFromType(type));
+            //ciso保存不改变状态
+            updateNode.setStatus(isCiso ? e.getStatus() : getEvaluationQuestionStatusFromType(type));
             updateNode.setSeverityLevel(e.getSeverityLevel());
             evaluationLibaryNodeMapper.updateByPrimaryKeySelective(updateNode);
         }
