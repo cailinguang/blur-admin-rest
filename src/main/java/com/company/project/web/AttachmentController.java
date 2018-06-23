@@ -38,7 +38,10 @@ public class AttachmentController {
 
     @PostMapping
     public Result add(@RequestParam("file")MultipartFile file,@RequestParam("bizId")String bizId) throws Exception{
-        String path = getClass().getClassLoader().getResource(File.separator).getPath() + File.separator + UUID.randomUUID().toString();
+        //String path = getClass().getClassLoader().getResource(File.separator).getFile() + File.separator + UUID.randomUUID().toString();
+        String path = new File(AttachmentController.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath()+
+                File.separator + "upload" + File.separator + UUID.randomUUID().toString();;
+
         File pathFile = new File(path);
         if(!pathFile.getParentFile().exists()){
             pathFile.getParentFile().mkdirs();

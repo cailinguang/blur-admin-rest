@@ -1,6 +1,7 @@
 package com.company.project.service.impl;
 
 import com.company.project.core.AbstractService;
+import com.company.project.core.ServiceException;
 import com.company.project.dao.ApplicabilityLibaryMapper;
 import com.company.project.dao.ApplicabilityLibaryNodeMapper;
 import com.company.project.dao.EvaluationLibaryMapper;
@@ -39,6 +40,10 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
 
     @Override
     public void deleteLibary(String id) {
+        EvaluationLibary evaluation = evaluationLibaryMapper.selectByPrimaryKey(id);
+        if(!Constants.EVALUATION_STATUS_NEW.equals(evaluation.getStatus())){
+            throw new ServiceException("Only new Project can be deleted !");
+        }
         evaluationLibaryMapper.deleteByPrimaryKey(id);
         Condition condition = new Condition(EvaluationLibaryNode.class);
         condition.createCriteria().andEqualTo("evaluationId",id);
