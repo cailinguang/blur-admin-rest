@@ -30,8 +30,9 @@
          a.id as att_id, a.name as att_name, a.size as att_size, a.biz_id as att_biz_id, a.create_time as att_create_time, a.path as att_path
         from  evaluation_libary_node n
         LEFT JOIN user u on u.id=n.assign_user
-        LEFT JOIN attachment a on n.id=a.biz_id
-        where n.parent_id = #{param1} order by n.node_position
+        LEFT JOIN attachment a on n.id=a.biz_id,
+    (select @c := getChildEvaluationNode(#{param1})) initialisation
+        where find_in_set(n.id,@c) order by n.node_position
     </select>
 
     <select id="selectNodesByEvaluationIdWithAssignUser" resultMap="BaseResultMap">

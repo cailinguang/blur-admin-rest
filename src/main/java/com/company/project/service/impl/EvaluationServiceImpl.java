@@ -6,11 +6,9 @@ import com.company.project.dao.ApplicabilityLibaryMapper;
 import com.company.project.dao.ApplicabilityLibaryNodeMapper;
 import com.company.project.dao.EvaluationLibaryMapper;
 import com.company.project.dao.EvaluationLibaryNodeMapper;
-import com.company.project.model.ApplicabilityLibary;
-import com.company.project.model.ApplicabilityLibaryNode;
-import com.company.project.model.EvaluationLibary;
-import com.company.project.model.EvaluationLibaryNode;
+import com.company.project.model.*;
 import com.company.project.service.EvaluationService;
+import com.company.project.service.UserService;
 import com.company.project.utils.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +31,12 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
     @Resource
     private EvaluationLibaryNodeMapper evaluationLibaryNodeMapper;
 
-    @Autowired
+    @Resource
     private ApplicabilityLibaryMapper applicabilityLibaryMapper;
-    @Autowired
+    @Resource
     private ApplicabilityLibaryNodeMapper applicabilityLibaryNodeMapper;
+    @Resource
+    private UserService userService;
 
     @Override
     public void deleteLibary(String id) {
@@ -84,6 +84,7 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
     public void createEvaluation(EvaluationLibary evaluation) {
         evaluation.setCreateTime(new Date());
         evaluation.setStatus(Constants.EVALUATION_STATUS_NEW);
+        evaluation.setCreator(userService.getCurrentUser().getId());
         evaluationLibaryMapper.insert(evaluation);
 
         System.out.println(evaluation.getId());
@@ -103,6 +104,9 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
 
         List<EvaluationLibaryNode> batchInserts = new ArrayList();
         saveNodes(evaluation.getSelectNodes(),indexed,evaluation.getId(),"0",batchInserts);
+        if(batchInserts.size()==0){
+            throw new ServiceException("Please select at least one question");
+        }
         evaluationLibaryNodeMapper.batchInsert(batchInserts);
     }
 
@@ -155,6 +159,11 @@ public class EvaluationServiceImpl extends AbstractService<EvaluationLibary> imp
 
     @Override
     public void updateEvaluation(EvaluationLibary evaluation) {
+        User user = userService.getCurrentUser();
+        EvaluationLibary original = evaluationLibaryMapper.selectByPrimaryKey(evaluation.getId());
+        if(original.getCreator()!=null && !original.getCreator().equals(user.getId())){
+            throw new ServiceException("Only project sponsors can modify!");
+        }
         evaluationLibaryMapper.updateByPrimaryKeySelective(evaluation);
 
         List<EvaluationLibaryNode> selectNodes = evaluation.getSelectNodes();

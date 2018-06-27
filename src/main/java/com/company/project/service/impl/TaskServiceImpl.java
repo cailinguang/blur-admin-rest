@@ -47,8 +47,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<EvaluationLibary> findAll() {
+        Condition condition = new Condition(EvaluationLibary.class);
+        condition.orderBy("createTime").desc();
+
         if(SecurityUtils.hasRole(Constants.ROLE_CISO)){
-            return evaluationLibaryMapper.selectAll();
+            return evaluationLibaryMapper.selectByExample(condition);
         }else{
             return evaluationLibaryMapper.selectTaskByUserId(userService.getCurrentUser().getId());
         }
@@ -106,17 +109,25 @@ public class TaskServiceImpl implements TaskService {
     public EvaluationLibaryNode queryChildrenNodes(String parentId) {
         EvaluationLibaryNode parent = evaluationLibaryNodeMapper.selectByPrimaryKey(parentId);
         List<EvaluationLibaryNode> nodes = evaluationLibaryNodeMapper.slectAllChildrenNode(parentId);
+        Map<String,EvaluationLibaryNode> indexed = new HashMap();
         nodes.forEach(e->{
-            _children(e);
+            indexed.put(e.getId(),e);
         });
 
-        parent.setChildren(nodes);
+        nodes.forEach(e->{
+            if(e.getParentId().equals(parentId)){
+                parent.addChildren(e);
+            }
+            else if (indexed.containsKey(e.getParentId())) {
+                indexed.get(e.getParentId()).addChildren(e);
+            }
+        });
+
         return parent;
     }
 
     @Override
     public void updateTask(EvaluationLibary evaluation,String type) {
-        boolean isCiso = SecurityUtils.hasRole(Constants.ROLE_CISO);
         EvaluationLibary update = new EvaluationLibary();
         update.setId(evaluation.getId());
         update.setStatus(getEvaluationStatusFromType(evaluation.getId(),type));
@@ -140,7 +151,7 @@ public class TaskServiceImpl implements TaskService {
             EvaluationLibaryNode question = selectNodes.get(0);
             log.setQuestion(question.getName());
             log.setQuestionSeverity(question.getSeverityLevel());
-            log.setQuestionStatus(isCiso ? question.getStatus() : getEvaluationQuestionStatusFromType(type));
+            log.setQuestionStatus(getEvaluationQuestionStatusFromType(question,type));
             EvaluationLibaryNode chapter = evaluationLibaryNodeMapper.selectByPrimaryKey(question.getParentId());
             log.setChapter(chapter.getName());
             try {
@@ -172,8 +183,7 @@ public class TaskServiceImpl implements TaskService {
         if(e.getType().equals(Constants.VDA_TYPE_QUESTION)){
             EvaluationLibaryNode updateNode = new EvaluationLibaryNode();
             updateNode.setId(e.getId());
-            //ciso保存不改变状态
-            updateNode.setStatus(isCiso ? e.getStatus() : getEvaluationQuestionStatusFromType(type));
+            updateNode.setStatus(getEvaluationQuestionStatusFromType(e,type));
             updateNode.setSeverityLevel(e.getSeverityLevel());
             evaluationLibaryNodeMapper.updateByPrimaryKeySelective(updateNode);
         }
@@ -205,8 +215,8 @@ public class TaskServiceImpl implements TaskService {
         else if("review".equals(type)){
             //如果是最后一个复核，修改项目状态:'已完成'
 
-            int checkStatusCount = evaluationLibaryNodeMapper.countByStatus(evaluationId,Constants.EVALUATION_QUESTION_STATUS_REVIEW);
-            int allCount = evaluationLibaryNodeMapper.countByEvaluationId(evaluationId);
+            int checkStatusCount = evaluationLibaryNodeMapper.countQuestionByStatus(evaluationId,Constants.EVALUATION_QUESTION_STATUS_REVIEW);
+            int allCount = evaluationLibaryNodeMapper.countQuestionByEvaluationId(evaluationId);
             if(checkStatusCount>=allCount-1){
                 return Constants.EVALUATION_STATUS_END;
             }
@@ -217,8 +227,13 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private String getEvaluationQuestionStatusFromType(String type){
+    private String getEvaluationQuestionStatusFromType(EvaluationLibaryNode node,String type){
+        //ciso保存不改变状态
+        boolean isCiso = SecurityUtils.hasRole(Constants.ROLE_CISO);
         if("save".equals(type)){
+            if(isCiso){
+                return node.getStatus();
+            }
             return Constants.EVALUATION_QUESTION_STATUS_PROCESSING;
         }
         else if("commit".equals(type)){
@@ -245,12 +260,6 @@ public class TaskServiceImpl implements TaskService {
         return null;
     }
 
-    private void _children(EvaluationLibaryNode parent){
-        parent.setChildren(evaluationLibaryNodeMapper.slectAllChildrenNode(parent.getId()));
-        parent.getChildren().forEach(e->{
-            _children(e);
-        });
-    }
 
     private int getLevel(EvaluationLibaryNode e, Map<String, EvaluationLibaryNode> indexed) {
         int level = 0;

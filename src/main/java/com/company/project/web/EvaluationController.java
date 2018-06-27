@@ -9,6 +9,7 @@ import com.company.project.utils.Constants;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,7 +27,9 @@ public class EvaluationController {
     @GetMapping
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<EvaluationLibary> list = evaluationService.findAll();
+        Condition condition = new Condition(EvaluationLibary.class);
+        condition.orderBy("createTime").desc();
+        List<EvaluationLibary> list = evaluationService.findAllByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }

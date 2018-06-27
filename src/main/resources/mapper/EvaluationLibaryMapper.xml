@@ -12,5 +12,6 @@
     <result column="applicability_id" jdbcType="VARCHAR" property="applicabilityId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="evaluation_type" jdbcType="CHAR" property="evaluationType" />
+    <result column="creator" jdbcType="VARCHAR" property="creator"/>
   </resultMap>
 </mapper>

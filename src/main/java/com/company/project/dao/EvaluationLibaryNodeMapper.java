@@ -34,9 +34,9 @@ public interface EvaluationLibaryNodeMapper extends Mapper<EvaluationLibaryNode>
             "</script>")
     int batchInsert(@Param("list")List<EvaluationLibaryNode> nodes);
 
-    @Select("select count(*) from evaluation_libary_node where evaluation_id=#{param1}")
-    int countByEvaluationId(String evaluationId);
+    @Select("select count(*) from evaluation_libary_node where type='vda_question' and evaluation_id=#{param1}")
+    int countQuestionByEvaluationId(String evaluationId);
 
-    @Select("select count(*) from evaluation_libary_node where evaluation_id=#{param1} and status=#{param2}")
-    int countByStatus(String evaluationId, String status);
+    @Select("select count(*) from evaluation_libary_node where type='vda_question' and evaluation_id=#{param1} and status=#{param2}")
+    int countQuestionByStatus(String evaluationId, String status);
 }

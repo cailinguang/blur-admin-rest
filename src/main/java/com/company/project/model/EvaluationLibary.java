@@ -28,6 +28,8 @@ public class EvaluationLibary {
     @Column(name="evaluation_type")
     private String evaluationType;
 
+    private String creator;
+
 
     @Transient
     private List<EvaluationLibaryNode> selectNodes = new ArrayList();
@@ -138,5 +140,13 @@ public class EvaluationLibary {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

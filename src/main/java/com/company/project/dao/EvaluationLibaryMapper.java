@@ -14,7 +14,7 @@ public interface EvaluationLibaryMapper extends Mapper<EvaluationLibary> {
      * @param userId
      * @return
      */
-    @Select("select * from evaluation_libary e where EXISTS ( select 1 from evaluation_libary_node n where n.evaluation_id=e.id and n.assign_user=#{userId} )")
+    @Select("select * from evaluation_libary e where EXISTS ( select 1 from evaluation_libary_node n where n.evaluation_id=e.id and n.assign_user=#{userId} ) order by create_time desc")
     @ResultMap("com.company.project.dao.EvaluationLibaryMapper.BaseResultMap")
     public List<EvaluationLibary> selectTaskByUserId(String userId);
 

@@ -11,6 +11,7 @@ import com.company.project.service.StandardLibaryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,7 +29,9 @@ public class ApplicabilityLibaryController {
     @GetMapping
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<ApplicabilityLibary> list = applicabilityLibaryService.findAll();
+        Condition condition = new Condition(ApplicabilityLibary.class);
+        condition.orderBy("createTime").desc();
+        List<ApplicabilityLibary> list = applicabilityLibaryService.findAllByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }

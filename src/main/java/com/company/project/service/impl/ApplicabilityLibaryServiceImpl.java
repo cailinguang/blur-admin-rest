@@ -55,6 +55,9 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
 
         List<ApplicabilityLibaryNode> batchInserts = new ArrayList();
         saveNodes(applicability.getSelectNodes(),indexed,applicability.getId(),"0",batchInserts);
+        if(batchInserts.size()==0){
+            throw new ServiceException("Please select at least one question!");
+        }
         applicabilityLibaryNodeMapper.batchInsert(batchInserts);
     }
 
@@ -186,7 +189,7 @@ public class ApplicabilityLibaryServiceImpl extends AbstractService<Applicabilit
         countCondition.setApplicabilityId(id);
         int count = evaluationLibaryMapper.selectCount(countCondition);
         if(count>0){
-            throw new ServiceException("已有项目评审使用该适用库,不能删除!");
+            throw new ServiceException("Existing project uses the applicable library and cannot be deleted!");
         }
         applicabilityLibaryMapper.deleteByPrimaryKey(id);
 
