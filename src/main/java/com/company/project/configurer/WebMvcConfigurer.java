@@ -62,7 +62,7 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic());
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(CacheControl.maxAge(30, TimeUnit.MINUTES).cachePublic());
     }
 
 }
