@@ -34,6 +34,9 @@ public class EvaluationLibary {
     @Transient
     private List<EvaluationLibaryNode> selectNodes = new ArrayList();
 
+    @Transient
+    private boolean canEdit = false;
+
     public List<EvaluationLibaryNode> getSelectNodes() {
         return selectNodes;
     }
@@ -148,5 +151,13 @@ public class EvaluationLibary {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public boolean isCanEdit() {
+        return canEdit;
+    }
+
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
     }
 }

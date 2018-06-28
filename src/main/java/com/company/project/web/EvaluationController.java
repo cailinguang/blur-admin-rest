@@ -4,7 +4,9 @@ import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.EvaluationLibary;
 import com.company.project.model.EvaluationLibaryNode;
+import com.company.project.model.User;
 import com.company.project.service.EvaluationService;
+import com.company.project.service.UserService;
 import com.company.project.utils.Constants;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -23,13 +25,21 @@ public class EvaluationController {
 
     @Resource
     private EvaluationService evaluationService;
+    @Resource
+    private UserService userService;
 
     @GetMapping
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        User currentUser = userService.getCurrentUser();
         PageHelper.startPage(page, size);
         Condition condition = new Condition(EvaluationLibary.class);
         condition.orderBy("createTime").desc();
         List<EvaluationLibary> list = evaluationService.findAllByCondition(condition);
+        list.forEach(e->{
+            if(e.getCreator()!=null&&e.getCreator().equals(currentUser.getId())){
+                e.setCanEdit(true);
+            }
+        });
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
