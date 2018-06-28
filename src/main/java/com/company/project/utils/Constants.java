@@ -35,10 +35,9 @@ public class Constants {
     public static final String EVALUATION_STATUS_END = "2";
 
 
-    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_COMPLIANT = "0";
-    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_PARTIAL_COMPLIANT = "1";
-    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_NO_COMPLIANT = "2";
-    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_OTHER = "3";
+    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_YES = "0";
+    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_NO = "1";
+    public static final String EVALUATION_CONTROL_COMPLIANCE_LEVEL_NA = "2";
 
 
     public static final String EVALUATION_LEVEL_APPROLED_YES = "1";

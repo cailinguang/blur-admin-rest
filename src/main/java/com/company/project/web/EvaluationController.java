@@ -106,10 +106,14 @@ public class EvaluationController {
             }
             if(node.getChildren().size()>0){
                 final double[] scope = {0};
+                final int[] size = {0};
                 node.getChildren().forEach(child->{
+                    if(child.getChildren().size()!=0 || (child.getComplianceLevel()!=null&&!child.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_NA))){
+                        size[0]++;
+                    }
                     scope[0] = scope[0]+calculateScope(child);
                 });
-                node.setScope(scope[0]/node.getChildren().size()*0.9);
+                node.setScope(scope[0]/size[0]*0.9);
                 return scope[0]/node.getChildren().size()*0.9;
             }else{
                 return 0;
@@ -120,13 +124,17 @@ public class EvaluationController {
         else if(node.getType().equals(Constants.VDA_TYPE_CONTROL)){
             if(node.getChildren().size()!=0){
                 final double[] scope = {0};
+                final int[] size = {0};
                 node.getChildren().forEach(child->{
+                    if(child.getChildren().size()!=0 || (child.getComplianceLevel()!=null&&!child.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_NA))){
+                        size[0]++;
+                    }
                     scope[0] = scope[0]+calculateScope(child);
                 });
-                node.setScope(scope[0]/node.getChildren().size());
+                node.setScope(scope[0]/size[0]);
                 return scope[0]/node.getChildren().size();
             }else{
-                if(node.getComplianceLevel()!=null&&node.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_COMPLIANT)){
+                if(node.getComplianceLevel()!=null&&node.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_YES)){
                     return 1;
                 }
                 return 0;
@@ -155,5 +163,6 @@ public class EvaluationController {
     public Result updateApplicabilityLibary(@RequestBody EvaluationLibary applicability){
         evaluationService.updateEvaluation(applicability);
         return ResultGenerator.genSuccessResult();
+
     }
 }
