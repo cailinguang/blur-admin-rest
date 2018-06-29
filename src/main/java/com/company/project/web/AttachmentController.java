@@ -71,7 +71,7 @@ public class AttachmentController {
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable("id") String id) throws Exception{
         Attachment att = attachmentService.findById(id);
-        FileUtils.forceDeleteOnExit(new File(att.getPath()));
+        new File(att.getPath()).delete();
         attachmentService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
