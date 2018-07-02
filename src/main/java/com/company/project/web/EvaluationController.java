@@ -89,6 +89,11 @@ public class EvaluationController {
             node.getChildren().forEach(child->{
                 scope[0] = scope[0]+calculateScope(child);
             });
+
+            if(node.getChildren().size()==0){
+                node.setScope(0);
+                return 0;
+            }
             node.setScope(scope[0]/node.getChildren().size());
             return scope[0]/node.getChildren().size();
         }
@@ -111,10 +116,20 @@ public class EvaluationController {
                     if(child.getChildren().size()!=0 || (child.getComplianceLevel()!=null&&!child.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_NA))){
                         size[0]++;
                     }
-                    scope[0] = scope[0]+calculateScope(child);
+                    double calScope = calculateScope(child);
+                    //当control包含子元素，并且所有子元素为N/A,分母-1
+                    if(Double.isNaN(calScope)){
+                        size[0]--;
+                    }else{
+                        scope[0] = scope[0]+ (calScope==1?1:0);
+                    }
                 });
+                if(size[0]==0){
+                    node.setScope(0);
+                    return 0;
+                }
                 node.setScope(scope[0]/size[0]*0.9);
-                return scope[0]/node.getChildren().size()*0.9;
+                return node.getScope();
             }else{
                 return 0;
             }
@@ -132,12 +147,12 @@ public class EvaluationController {
                     scope[0] = scope[0]+calculateScope(child);
                 });
                 node.setScope(scope[0]/size[0]);
-                return scope[0]/node.getChildren().size();
+                return node.getScope();
             }else{
                 if(node.getComplianceLevel()!=null&&node.getComplianceLevel().equals(Constants.EVALUATION_CONTROL_COMPLIANCE_LEVEL_YES)){
                     return 1;
                 }
-                return 0;
+                else return 0;
             }
         }
         else return 0d;
