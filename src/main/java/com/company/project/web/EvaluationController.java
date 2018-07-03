@@ -99,9 +99,15 @@ public class EvaluationController {
         }
         else if(node.getType().equals(Constants.VDA_TYPE_QUESTION)){
             final double[] scope = {0};
-            node.getChildren().forEach(child->{
+            for(EvaluationLibaryNode child:node.getChildren()){
+                double calScope = calculateScope(child);
                 scope[0] = scope[0]+calculateScope(child);
-            });
+                if(calScope!=1){
+                    node.setScope(scope[0]);
+                    return node.getScope();
+                }
+            }
+
             node.setScope(scope[0]);
             return scope[0];
         }
