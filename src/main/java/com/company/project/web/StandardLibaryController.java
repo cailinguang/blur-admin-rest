@@ -50,13 +50,27 @@ public class StandardLibaryController {
     public Result updateNodeProperty(@RequestBody Map<String,String> node){
         String nodeId = node.get("id");
         String nodeDescription = node.get("description");
+        String nodeName = node.get("name");
 
         StandardLibaryNode standardLibaryNode = new StandardLibaryNode();
         standardLibaryNode.setId(nodeId);
         standardLibaryNode.setDescription(nodeDescription);
+        standardLibaryNode.setName(nodeName);
 
         standardLibaryService.updateNode(standardLibaryNode);
 
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/node")
+    public Result add(@RequestBody StandardLibaryNode node) {
+        standardLibaryService.saveNode(node);
+        return ResultGenerator.genSuccessResult(node);
+    }
+
+    @DeleteMapping("/node/{id}")
+    public Result delete(@PathVariable("id") String id) {
+        standardLibaryService.deleteNode(id);
         return ResultGenerator.genSuccessResult();
     }
 

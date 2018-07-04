@@ -1,5 +1,6 @@
 package com.company.project.service.impl;
 
+import com.company.project.core.ServiceException;
 import com.company.project.dao.StandardLibaryMapper;
 import com.company.project.dao.StandardLibaryNodeMapper;
 import com.company.project.model.StandardLibary;
@@ -86,7 +87,23 @@ public class StandardLibaryServiceImpl extends AbstractService<StandardLibary> i
     public void updateNode(StandardLibaryNode standardLibaryNode) {
         standardLibaryNodeMapper.updateByPrimaryKeySelective(standardLibaryNode);
         //级联更新节点的描述
-        standardLibaryNodeMapper.updateApplicabilityNodeDescription(standardLibaryNode.getId(),standardLibaryNode.getDescription());
-        standardLibaryNodeMapper.updateEvaluationNodeDescription(standardLibaryNode.getId(),standardLibaryNode.getDescription());
+        standardLibaryNodeMapper.updateApplicabilityNodeDescription(standardLibaryNode.getId(),standardLibaryNode.getDescription(),standardLibaryNode.getName());
+        standardLibaryNodeMapper.updateEvaluationNodeDescription(standardLibaryNode.getId(),standardLibaryNode.getDescription(),standardLibaryNode.getName());
+    }
+
+    @Override
+    public void saveNode(StandardLibaryNode node) {
+        standardLibaryNodeMapper.insert(node);
+    }
+
+    @Override
+    public void deleteNode(String nodeId) {
+        StandardLibaryNode condition = new StandardLibaryNode();
+        condition.setParentId(nodeId);
+        int count = standardLibaryNodeMapper.selectCount(condition);
+        if(count>0){
+            throw new ServiceException("The current node has child elements , cannot be delete");
+        }
+        standardLibaryNodeMapper.deleteByPrimaryKey(nodeId);
     }
 }

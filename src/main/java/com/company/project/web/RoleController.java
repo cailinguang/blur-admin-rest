@@ -2,8 +2,10 @@ package com.company.project.web;
 
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
+import com.company.project.core.ServiceException;
 import com.company.project.model.Role;
 import com.company.project.service.RoleService;
+import com.company.project.utils.Constants;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -36,12 +38,20 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable("id") String id) {
+        Role queryRole = roleService.findById(id);
+        if(Constants.ROLE_CISO.equals(queryRole.getCode())||Constants.ROLE_SECURITY_LIAISON.equals(queryRole.getCode())||Constants.ROLE_ADMIN.equals(queryRole.getCode())){
+            throw new ServiceException("Built-in roles do not allow changes!");
+        }
         roleService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @PutMapping("/{id}")
     public Result update(@PathVariable("id") String id,@RequestBody Role role) {
+        Role queryRole = roleService.findById(id);
+        if(Constants.ROLE_CISO.equals(queryRole.getCode())||Constants.ROLE_SECURITY_LIAISON.equals(queryRole.getCode())||Constants.ROLE_ADMIN.equals(queryRole.getCode())){
+            throw new ServiceException("Built-in roles do not allow changes!");
+        }
         role.setId(id);
         roleService.update(role);
         return ResultGenerator.genSuccessResult();

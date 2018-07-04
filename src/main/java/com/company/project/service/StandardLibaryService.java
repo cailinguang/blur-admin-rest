@@ -14,4 +14,8 @@ public interface StandardLibaryService extends Service<StandardLibary> {
     List<StandardLibaryNode> queryStandardNodes(String standardId, int level);
 
     void updateNode(StandardLibaryNode standardLibaryNode);
+
+    void saveNode(StandardLibaryNode node);
+
+    void deleteNode(String nodeId);
 }

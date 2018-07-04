@@ -14,9 +14,11 @@ public class Constants {
 
 
     /**信息安全联络员*/
-    public static final String ROLE_SECURITY_LIAISON = "liaison";
+    public static final String ROLE_SECURITY_LIAISON = "Information Security Coordinator";
     /**CISO*/
     public static final String ROLE_CISO = "ciso";
+    /**ADMIN */
+    public static final String ROLE_ADMIN = "System Administrator";
 
     /**待处理*/
     public static final String EVALUATION_QUESTION_STATUS_PENDING = "0";
