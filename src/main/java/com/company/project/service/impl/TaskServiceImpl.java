@@ -2,13 +2,11 @@ package com.company.project.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.company.project.core.ServiceException;
+import com.company.project.dao.DeptMapper;
 import com.company.project.dao.EvaluationLibaryMapper;
 import com.company.project.dao.EvaluationLibaryNodeMapper;
 import com.company.project.dao.TaskLogMapper;
-import com.company.project.model.EvaluationLibary;
-import com.company.project.model.EvaluationLibaryNode;
-import com.company.project.model.TaskLog;
-import com.company.project.model.User;
+import com.company.project.model.*;
 import com.company.project.service.EvaluationService;
 import com.company.project.service.RoleService;
 import com.company.project.service.TaskService;
@@ -44,15 +42,23 @@ public class TaskServiceImpl implements TaskService {
     private EvaluationService evaluationService;
     @Resource
     private TaskLogMapper taskLogMapper;
+    @Resource
+    private DeptMapper deptMapper;
 
     @Override
     public List<EvaluationLibary> findAll() {
         Condition condition = new Condition(EvaluationLibary.class);
         condition.orderBy("createTime").desc();
-
+        //CISO
         if(SecurityUtils.hasRole(Constants.ROLE_CISO)){
             return evaluationLibaryMapper.selectByExample(condition);
-        }else{
+        }
+        //business owner
+        else if(SecurityUtils.hasRole(Constants.ROLE_BUSSINESS_OWNER)){
+            return evaluationLibaryMapper.selectDeptsTaskByUserId(userService.getCurrentUser().getId());
+        }
+        //联络员
+        else{
             return evaluationLibaryMapper.selectTaskByUserId(userService.getCurrentUser().getId());
         }
     }
@@ -60,8 +66,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<EvaluationLibaryNode> queryNodes(String evaluationId, int level) {
         //当角色是CISO查询所有question,否则根据用户筛选
-        final boolean queryAll = SecurityUtils.hasRole(Constants.ROLE_CISO);
+        final boolean isCiso = SecurityUtils.hasRole(Constants.ROLE_CISO);
+        //business owner查询部门及子部门下人员的节点
+        final boolean isOwner = SecurityUtils.hasRole(Constants.ROLE_BUSSINESS_OWNER);
+        //lianluo
+        final boolean isLianluo = SecurityUtils.hasRole(Constants.ROLE_SECURITY_LIAISON);
+
         User currentUser = userService.getCurrentUser();
+        //当前登录人的部门及子部门
+        List<Dept> childDepts = deptMapper.selectChildrenDept(currentUser.getDeptId());
 
         List<EvaluationLibaryNode> results = new ArrayList();
         Map<String,EvaluationLibaryNode> indexed = new HashMap();
@@ -73,10 +86,20 @@ public class TaskServiceImpl implements TaskService {
         for(int i=nodes.size()-1;i>=0;i--){
             EvaluationLibaryNode e = nodes.get(i);
             //跳过 question
-            if(!queryAll && Constants.VDA_TYPE_QUESTION.equals(e.getType()) && !currentUser.getId().equals(e.getAssignUser())){
-                nodes.remove(i);
-                continue;
+            if(isLianluo){
+                if(Constants.VDA_TYPE_QUESTION.equals(e.getType()) && !currentUser.getId().equals(e.getAssignUser())){
+                    nodes.remove(i);
+                    continue;
+                }
             }
+            if(isOwner){
+                if(Constants.VDA_TYPE_QUESTION.equals(e.getType()) && ( e.getAssign()==null || !isBlongDept(childDepts,e.getAssign().getDeptId())) ){
+                    nodes.remove(i);
+                    continue;
+                }
+            }
+            //ciso view all nodes
+
             indexed.put(e.getId(),e);
         }
 
@@ -286,5 +309,20 @@ public class TaskServiceImpl implements TaskService {
         results.forEach(e->{
             sort(e.getChildren());
         });
+    }
+
+    /**
+     * 给定部门是否属于集合里的部门
+     * @param depts
+     * @param deptId
+     * @return
+     */
+    private boolean isBlongDept(List<Dept> depts,String deptId){
+        for(Dept d :depts){
+            if(deptId.equals(d.getId())){
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -39,7 +39,7 @@ public class RoleController {
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable("id") String id) {
         Role queryRole = roleService.findById(id);
-        if(Constants.ROLE_CISO.equals(queryRole.getCode())||Constants.ROLE_SECURITY_LIAISON.equals(queryRole.getCode())||Constants.ROLE_ADMIN.equals(queryRole.getCode())){
+        if(Constants.ROLE_CISO.equals(queryRole.getCode())||Constants.ROLE_SECURITY_LIAISON.equals(queryRole.getCode())||Constants.ROLE_ADMIN.equals(queryRole.getCode()) || Constants.ROLE_BUSSINESS_OWNER.equals(queryRole.getCode())){
             throw new ServiceException("Built-in roles do not allow changes!");
         }
         roleService.deleteById(id);
@@ -49,7 +49,7 @@ public class RoleController {
     @PutMapping("/{id}")
     public Result update(@PathVariable("id") String id,@RequestBody Role role) {
         Role queryRole = roleService.findById(id);
-        if(Constants.ROLE_CISO.equals(queryRole.getCode())||Constants.ROLE_SECURITY_LIAISON.equals(queryRole.getCode())||Constants.ROLE_ADMIN.equals(queryRole.getCode())){
+        if(Constants.ROLE_CISO.equals(queryRole.getCode())||Constants.ROLE_SECURITY_LIAISON.equals(queryRole.getCode())||Constants.ROLE_ADMIN.equals(queryRole.getCode()) || Constants.ROLE_BUSSINESS_OWNER.equals(queryRole.getCode())){
             throw new ServiceException("Built-in roles do not allow changes!");
         }
         role.setId(id);

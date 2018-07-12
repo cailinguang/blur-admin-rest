@@ -18,4 +18,13 @@ public interface EvaluationLibaryMapper extends Mapper<EvaluationLibary> {
     @ResultMap("com.company.project.dao.EvaluationLibaryMapper.BaseResultMap")
     public List<EvaluationLibary> selectTaskByUserId(String userId);
 
+
+    /**
+     * 查询有节点指派给给定人员部门的人员及子部门的评审项目
+     * @param userId
+     * @return
+     */
+    @Select("select e.* from evaluation_libary e,(select @deptId:=dept_id from user where id=#{userId}) init1,(select @c := getChildDept( @deptId ) ) init2 where EXISTS ( select 1 from evaluation_libary_node n left join user u on n.assign_user=u.id  where n.evaluation_id=e.id and find_in_set( u.dept_id,@c )) order by create_time desc")
+    @ResultMap("com.company.project.dao.EvaluationLibaryMapper.BaseResultMap")
+    public List<EvaluationLibary> selectDeptsTaskByUserId(String userId);
 }

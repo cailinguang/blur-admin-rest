@@ -19,6 +19,8 @@ public class Constants {
     public static final String ROLE_CISO = "ciso";
     /**ADMIN */
     public static final String ROLE_ADMIN = "System Administrator";
+    /**项目总监*/
+    public static final String ROLE_BUSSINESS_OWNER = "Business Owner";
 
     /**待处理*/
     public static final String EVALUATION_QUESTION_STATUS_PENDING = "0";
