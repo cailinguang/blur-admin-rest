@@ -20,7 +20,7 @@
 
     <select id="queryAllTask" resultMap="BaseResultMap">
         SELECT t.*, u.username as user_name,d.name as dept_name
-         FROM task_log t LEFT JOIN user u on t.user=u.id
+         FROM task_log t LEFT JOIN [user] u on t.[user]=u.id
          LEFT JOIN dept d on t.dept=d.id
          where t.evaluation_id=#{param1}
          order by time desc

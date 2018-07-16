@@ -15,6 +15,7 @@ public class TaskLog {
 
     private Date time;
 
+    @Column(name = "[user]")
     private String user;
 
     @Transient

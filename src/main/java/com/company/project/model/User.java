@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
+@Table(name = "[user]")
 public class User {
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)

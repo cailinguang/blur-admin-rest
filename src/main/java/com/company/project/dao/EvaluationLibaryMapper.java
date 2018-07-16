@@ -24,7 +24,13 @@ public interface EvaluationLibaryMapper extends Mapper<EvaluationLibary> {
      * @param userId
      * @return
      */
-    @Select("select e.* from evaluation_libary e,(select @deptId:=dept_id from user where id=#{userId}) init1,(select @c := getChildDept( @deptId ) ) init2 where EXISTS ( select 1 from evaluation_libary_node n left join user u on n.assign_user=u.id  where n.evaluation_id=e.id and find_in_set( u.dept_id,@c )) order by create_time desc")
+    @Select("with temp as( " +
+            " select id from dept where id=(select dept_id from [user] where id=#{userId}) " +
+            " union all " +
+            " select t.id from temp,dept t where temp.id=t.parent " +
+            ") " +
+            "select e.* from evaluation_libary e where exists(select 1 from evaluation_libary_node n left join [user] u on n.assign_user=u.id  where n.evaluation_id=e.id and u.dept_id in (select * from temp)) " +
+            "order by create_time desc")
     @ResultMap("com.company.project.dao.EvaluationLibaryMapper.BaseResultMap")
     public List<EvaluationLibary> selectDeptsTaskByUserId(String userId);
 }
