@@ -16,7 +16,7 @@ public interface PermissionMapper {
     public List<Menu> selectMenuByRoleId(String roleId);
 
     @ResultMap("com.company.project.dao.UserMapper.BaseResultMap")
-    @Select("select * from user u where EXISTS (select 1 from user_role ur where u.id=ur.user_id and ur.role_id=#{roleId})")
+    @Select("select * from [user] u where EXISTS (select 1 from user_role ur where u.id=ur.user_id and ur.role_id=#{roleId})")
     public List<User> selectUserByRoleId(String roleId);
 
     @Select("select * from role r where EXISTS (select 1 from user_role ur where ur.role_id=r.id and ur.user_id=#{userId})")
